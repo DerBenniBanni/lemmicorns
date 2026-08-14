@@ -22,9 +22,14 @@ The plan:
   - walk in one direction, a wall-hit turns them around
   - a wall is at least 2 (3?) pixels high, otherwise the lemmicorn climbs up 
   - a drop of more that 100 pixels (to be definded) is lethal
-  
 
-
-## 2026-08-14 - Created Github repository
+## 2026-08-14 - Created Github repositoryand some art
 
 Researched Lemmings gameplay. Turns out i forgot much about it. So much fun. And so much time consumed by playing Lemmings...
+
+Started the spritesheet, this time not all images will be procedurally generated. animations for walking, stopping and digging done.
+
+![sprites_v1.png](sprites_v1.png)
+
+Also added a simple animation class to the game.
+

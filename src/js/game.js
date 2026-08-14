@@ -1,3 +1,5 @@
+import { Spritesheet } from "./framework/spritesheet.js";
+
 const MAX_DELTA = 0.1;
 
 export class Game {
@@ -9,13 +11,15 @@ export class Game {
         this.lastUpdate = performance.now();
         this.objects = [];
         this.levelImageData= [];
+        this.sprites = null;
     }
 
-    init(canvasLevel, canvasGame) {
+    init(canvasLevel, canvasGame, spriteImage) {
         this.canvasLevel = canvasLevel;
         this.ctxLevel = canvasLevel.getContext("2d", {willReadFrequently: true});
         this.canvas = canvasGame;
         this.ctx = canvasGame.getContext("2d");
+        this.sprites = new Spritesheet(spriteImage);
         this.gameloop();
     }
 

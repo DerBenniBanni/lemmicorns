@@ -16,13 +16,13 @@ export class GameObject extends Point {
 
     renderStart(ctx) {
         ctx.save();
-        ctx.translate(Math.round(this.x), Math.round(this.y));
+        ctx.translate(Math.round(this.x-this.origin.x), Math.round(this.y-this.origin.y));
     }
 
     render(ctx) {
         this.renderStart(ctx);
         ctx.fillStyle = '#ff06';
-        ctx.fillRect(-this.origin.x, -this.origin.y, this.size, this.size);
+        ctx.fillRect(0, 0, this.size, this.size);
         this.renderEnd(ctx);
     }
 
