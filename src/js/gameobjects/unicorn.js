@@ -1,6 +1,7 @@
 import Point from "../framework/point.js";
 import { GameObject } from "./gameobject.js";
-
+const SPEED = 20;
+const FALL_SPEED = 40;
 export class Unicorn extends GameObject{
     constructor(x,y) {
         super(x,y);
@@ -12,9 +13,9 @@ export class Unicorn extends GameObject{
     update(delta) {
         let data = this.game.getImageData(this.x, this.y);
         if(!!!data.a || data.a < 1) {
-            this.y += 30* delta;
+            this.y += FALL_SPEED * delta;
         } else {
-            this.x += 20 * delta;
+            this.x += SPEED * delta;
         }
     }
 }
