@@ -1,4 +1,5 @@
 import { Spritesheet } from "./framework/spritesheet.js";
+import { STATE_STOP } from "./gameobjects/unicorn.js";
 
 const MAX_DELTA = 0.1;
 
@@ -12,6 +13,8 @@ export class Game {
         this.objects = [];
         this.levelImageData= [];
         this.sprites = null;
+
+        this.stoppers = [];
     }
 
     init(canvasLevel, canvasGame, spriteImage) {
@@ -23,13 +26,21 @@ export class Game {
         this.gameloop();
     }
 
+    getObjectsByType(type) {
+        return this.objects.filter(o => o.type == type)
+    }
+
     gameloop() {
         let delta = this.delta();
-        //console.log(delta);
+        this.setSpecialGameObjects()
         this.levelImageData = this.ctxLevel.getImageData(0,0,this.canvasLevel.width, this.canvasLevel.height);
         this.update(delta);
         this.render();
         requestAnimationFrame(()=>this.gameloop());
+    }
+
+    setSpecialGameObjects() {
+        this.stoppers = this.objects.filter(o => o.type == "unicorn" && o.state == STATE_STOP)
     }
 
     delta() {

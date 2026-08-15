@@ -33,3 +33,10 @@ Started the spritesheet, this time not all images will be procedurally generated
 
 Also added a simple animation class to the game.
 
+## 2026-08-14 - Walls and Stoppers, Diggers ans falling
+
+The Lemmicorns are now turning around when hitting a wall or a stopper.
+
+The Digger is now really digging a hole, by simply erasing the area around the Lemmicorn on the level canvas. I love it when a plan comes together!
+
+Added another spriteanim for falling.
