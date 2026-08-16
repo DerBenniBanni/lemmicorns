@@ -1,10 +1,13 @@
 import { Animation } from "../framework/animation.js";
 import Point from "../framework/point.js";
 import { GameObject } from "./gameobject.js";
+import { getParticle, Particle, PARTICLEGROUP_HEART } from "./particle.js";
 
-const SPEED = 20;
-const FALL_SPEED = 40;
-const DIG_INTERVAL = 0.3;
+const SPEED = 20; // pixel per second
+const FALL_SPEED = 40; // pixel per second
+const DIG_INTERVAL = 0.3; // seconds until one pixel is digged
+const FALLING_TIMEOUT = 0.1; // seconds until the falling-state is activated
+const FALL_HEIGHT_SURVIVABLE = 80; // max pixel of survivable falling
 
 export const STATE_WALK = "walk";
 export const STATE_STOP = "stop";
@@ -39,6 +42,12 @@ export class Unicorn extends GameObject{
                 10, 0.3,
                 11, 0.1,
             ]),
+            "dig_h": new Animation(16,16, this, [
+                16, 0.3,
+                17, 0.2,
+                18, 0.3,
+                17, 0.2,
+            ]),
             "fall": new Animation(16,16, this, [
                 12, 0.2,
                 13, 0.2,
@@ -47,23 +56,45 @@ export class Unicorn extends GameObject{
         this.state = STATE_WALK;
         this.functionState = STATE_WALK;
         this.digTimer = 0;
+        this.fallingTimeout = 0;
+        this.fallHeight = 0;
+    }
+
+    getFunctionStateAfterFall() {
+        if([STATE_DIG_DOWN].indexOf(this.state) >= 0) {
+            return STATE_WALK;
+        }
+        return this.state;
     }
 
     update(delta) {
+        super.update(delta);
         this.animations[this.state].update(delta);
         let grounded = [-5, 5].map(dx => this.game.getImageData(this.x + dx, this.y))
             .filter(d => !!d.a || d.a > 180)
             .length > 0;
         if(!grounded) {
-            this.y += FALL_SPEED * delta;
-            if(this.state != STATE_FALLING) {
-                this.functionState = this.state;
+            this.fallingTimeout += delta;
+            if(this.state != STATE_FALLING && this.fallingTimeout > FALLING_TIMEOUT) {
+                this.functionState = this.getFunctionStateAfterFall();
                 this.state = STATE_FALLING;
             }
+            let dy = FALL_SPEED * delta
+            this.y += dy;
+            this.fallHeight += dy;
         } else {
             if(this.state == STATE_FALLING) {
                 this.state = this.functionState;
+                if(this.fallHeight > FALL_HEIGHT_SURVIVABLE) {
+                    this.ttl = -1;
+                    for(let i=0; i < 10; i++) {
+                        let p = new Particle(this.x, this.y, getParticle(PARTICLEGROUP_HEART), Math.random()+0.8, Math.random() * 30 - 15, Math.random() * -30 - 20, 70);
+                        this.game.add(p);
+                    }
+                }
             }
+            this.fallingTimeout = 0;
+            this.fallHeight = 0;
             if(this.state == STATE_WALK) {
                 let nextX = this.x + SPEED * delta* this.direction;
                 let checkX = this.x + 5*this.direction;
@@ -79,12 +110,15 @@ export class Unicorn extends GameObject{
                 this.digTimer+=delta;
                 if(this.digTimer > DIG_INTERVAL) {
                     this.digTimer -= DIG_INTERVAL;
-                    this.game.ctxLevel.clearRect(this.x-8,this.y-16, 16, 18);
+                    this.game.ctxLevel.clearRect(this.x-8,this.y-16, 16, 16);
+                    this.game.ctxLevel.clearRect(this.x-7,this.y-16, 14, 17);
+                    this.game.ctxLevel.clearRect(this.x-6,this.y-16, 12, 18);
                 }
                 
             }
         }
     }
+
 
     checkStopperCollide(x, y) {
         for(let stopper of this.game.stoppers) {
@@ -99,6 +133,9 @@ export class Unicorn extends GameObject{
     }
 
     render(ctx) {
+        if(this.ttl <= 0) {
+            return;
+        }
         this.renderStart(ctx);
         this.animations[this.state].render(ctx, this.direction < 0)
         this.renderEnd(ctx);

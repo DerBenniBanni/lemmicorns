@@ -8,10 +8,11 @@ export class GameObject extends Point {
         this.type = "gameobject";
         this.origin = new Point(GO_SIZE/2, GO_SIZE/2);
         this.size = GO_SIZE;
+        this.ttl = Infinity;
     }
 
     update(delta) {
-
+        this.ttl -= delta;
     }
 
     renderStart(ctx) {
@@ -19,10 +20,10 @@ export class GameObject extends Point {
         ctx.translate(Math.round(this.x-this.origin.x), Math.round(this.y-this.origin.y));
     }
 
+    // override this!
     render(ctx) {
         this.renderStart(ctx);
-        ctx.fillStyle = '#ff06';
-        ctx.fillRect(0, 0, this.size, this.size);
+        // render stuff here
         this.renderEnd(ctx);
     }
 

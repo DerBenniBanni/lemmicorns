@@ -54,6 +54,7 @@ export class Game {
     }
 
     update(delta) {
+        this.objects = this.objects.filter(o=>o.ttl > 0);
         this.objects.forEach(o => o.update(delta));
     }
 
