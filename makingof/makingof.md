@@ -44,4 +44,7 @@ Added another spriteanim for falling.
 
 ## 2026-08-15 - Lethal heights and horizontal digger
 
-I added particles for effects: Lemmincorns that drop from tto high now pop into a bunch of colored hearts upon impact.
+I added particles for effects: Lemmincorns that drop from too high now pop into a bunch of colored hearts upon impact.
+The digging creates some mud-particles too.
+
+Lemmicorns now can also dig horizontal. Next up: diagonally down

@@ -1,7 +1,7 @@
 import { Animation } from "../framework/animation.js";
 import Point from "../framework/point.js";
 import { GameObject } from "./gameobject.js";
-import { getParticle, Particle, PARTICLEGROUP_HEART } from "./particle.js";
+import { getParticle, Particle, PARTICLEGROUP_HEART, PARTICLEGROUP_MUD } from "./particle.js";
 
 const SPEED = 20; // pixel per second
 const FALL_SPEED = 40; // pixel per second
@@ -12,6 +12,8 @@ const FALL_HEIGHT_SURVIVABLE = 80; // max pixel of survivable falling
 export const STATE_WALK = "walk";
 export const STATE_STOP = "stop";
 export const STATE_DIG_DOWN = "dig";
+export const STATE_DIG_HORIZONTAL = "dig_h";
+export const STATE_DIG_DIAGONAL = "dig_d";
 export const STATE_FALLING = "fall";
 
 const pixelTerrain = (imageData) => !!imageData.a && imageData.a > 180;
@@ -58,6 +60,7 @@ export class Unicorn extends GameObject{
         this.digTimer = 0;
         this.fallingTimeout = 0;
         this.fallHeight = 0;
+        this.willDigHorizontal = false;
     }
 
     getFunctionStateAfterFall() {
@@ -65,6 +68,15 @@ export class Unicorn extends GameObject{
             return STATE_WALK;
         }
         return this.state;
+    }
+
+    die() {
+        this.ttl = -1;
+        for(let i=0; i < 10; i++) {
+            let p = new Particle(this.x, this.y, getParticle(PARTICLEGROUP_HEART), Math.random()+0.8, Math.random() * 30 - 15, Math.random() * -30 - 20, 70);
+            this.game.add(p);
+        }
+        this.generateMud(10);
     }
 
     update(delta) {
@@ -86,11 +98,8 @@ export class Unicorn extends GameObject{
             if(this.state == STATE_FALLING) {
                 this.state = this.functionState;
                 if(this.fallHeight > FALL_HEIGHT_SURVIVABLE) {
-                    this.ttl = -1;
-                    for(let i=0; i < 10; i++) {
-                        let p = new Particle(this.x, this.y, getParticle(PARTICLEGROUP_HEART), Math.random()+0.8, Math.random() * 30 - 15, Math.random() * -30 - 20, 70);
-                        this.game.add(p);
-                    }
+                    this.die();
+                    return;
                 }
             }
             this.fallingTimeout = 0;
@@ -99,8 +108,11 @@ export class Unicorn extends GameObject{
                 let nextX = this.x + SPEED * delta* this.direction;
                 let checkX = this.x + 5*this.direction;
                 let checkY = this.y-2;
-                if(pixelTerrain(this.game.getImageData(checkX,checkY))
-                    || this.checkStopperCollide(checkX, checkY)) {
+                let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
+                if(hitWall && this.willDigHorizontal) {
+                    this.state = STATE_DIG_HORIZONTAL;
+                    nextX = this.x;
+                }else if(hitWall || this.checkStopperCollide(checkX, checkY)) {
                     this.direction *= -1;
                     nextX = this.x;
                 }
@@ -113,11 +125,45 @@ export class Unicorn extends GameObject{
                     this.game.ctxLevel.clearRect(this.x-8,this.y-16, 16, 16);
                     this.game.ctxLevel.clearRect(this.x-7,this.y-16, 14, 17);
                     this.game.ctxLevel.clearRect(this.x-6,this.y-16, 12, 18);
+                    this.generateMud(3);
                 }
                 
             }
+            if(this.state == STATE_DIG_HORIZONTAL) {
+                this.digTimer+=delta;
+                if(this.digTimer > DIG_INTERVAL) {
+                    this.digTimer -= DIG_INTERVAL;
+                    if(this.direction > 0) {
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-15, 15, 16);
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-14, 16, 14);
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-13, 17, 12);
+                    } else {
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-15, 15, 16);
+                        this.game.ctxLevel.clearRect(this.x-9,this.y-14, 16, 14);
+                        this.game.ctxLevel.clearRect(this.x-10,this.y-13, 17, 12);
+                    }
+                    this.generateMud(3);
+                    this.x+= this.direction;
+                    let checkX = this.x + 5 * this.direction;
+                    let checkY = this.y-2;
+                    let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
+                    if(!hitWall) {
+                        this.state = STATE_WALK;
+                    }
+                }
+            }
+        }
+        if(this.y >= this.game.canvasLevel.height) {
+            this.die();
         }
     }
+
+    generateMud(amount) {
+        for(let i=0; i < amount; i++) {
+            this.game.add(new Particle(this.x, this.y, getParticle(PARTICLEGROUP_MUD), Math.random()/2+0.4, Math.random() * 50 - 25, Math.random() * -30 - 10, 30));
+        }
+    }
+    
 
 
     checkStopperCollide(x, y) {
