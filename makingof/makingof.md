@@ -42,9 +42,11 @@ The Digger is now really digging a hole, by simply erasing the area around the L
 Added another spriteanim for falling.
 
 
-## 2026-08-15 - Lethal heights and horizontal digger
+## 2026-08-16 - Lethal heights and horizontal digger
 
 I added particles for effects: Lemmincorns that drop from too high now pop into a bunch of colored hearts upon impact.
 The digging creates some mud-particles too.
 
 Lemmicorns now can also dig horizontal. Next up: diagonally down
+
+Final addition today: exploding Lemmicorns

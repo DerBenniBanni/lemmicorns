@@ -8,6 +8,8 @@ const FALL_SPEED = 40; // pixel per second
 const DIG_INTERVAL = 0.3; // seconds until one pixel is digged
 const FALLING_TIMEOUT = 0.1; // seconds until the falling-state is activated
 const FALL_HEIGHT_SURVIVABLE = 80; // max pixel of survivable falling
+const EXPLOSION_TIMEOUT = 3; // seconds after a activation
+const EXPLOSION_ANIM = 1; // duration for the oh-no animation
 
 export const STATE_WALK = "walk";
 export const STATE_STOP = "stop";
@@ -15,6 +17,7 @@ export const STATE_DIG_DOWN = "dig";
 export const STATE_DIG_HORIZONTAL = "dig_h";
 export const STATE_DIG_DIAGONAL = "dig_d";
 export const STATE_FALLING = "fall";
+export const STATE_EXPLODE = "explode";
 
 const pixelTerrain = (imageData) => !!imageData.a && imageData.a > 180;
 
@@ -47,12 +50,26 @@ export class Unicorn extends GameObject{
             "dig_h": new Animation(16,16, this, [
                 16, 0.3,
                 17, 0.2,
+                1, 0.1,
                 18, 0.3,
+                3, 0.1,
+                17, 0.2,
+            ]),
+            "dig_d": new Animation(16,16, this, [
+                16, 0.3,
+                17, 0.3,
+                1, 0.2,
                 17, 0.2,
             ]),
             "fall": new Animation(16,16, this, [
                 12, 0.2,
                 13, 0.2,
+            ]),
+            "explode": new Animation(16,16, this, [
+                20, 0.1,
+                21, 0.1,
+                20, 0.1,
+                22, 0.1,
             ]),
         };
         this.state = STATE_WALK;
@@ -61,6 +78,7 @@ export class Unicorn extends GameObject{
         this.fallingTimeout = 0;
         this.fallHeight = 0;
         this.willDigHorizontal = false;
+        this.explode = Infinity; // never
     }
 
     getFunctionStateAfterFall() {
@@ -79,8 +97,35 @@ export class Unicorn extends GameObject{
         this.generateMud(10);
     }
 
+    setExploding() {
+        this.explode = EXPLOSION_TIMEOUT;
+    }
+
+    explodeTerrain() {
+        let max = 8;
+        let rad = 16;
+        let x = this.x-rad;
+        let y = this.y-rad-this.origin.y/2;
+        for(let i = 0; i <= max; i++) {
+            let ii = max-i; // inversed i
+            let dx = x + i;
+            let w = 2*(rad-i);
+            let dy = y + ii;
+            let h = 2*(rad-ii);
+            this.game.ctxLevel.clearRect(dx,dy,w,h);
+        }
+    }
+
     update(delta) {
         super.update(delta);
+        this.explode-=delta;
+        if(this.explode <= 0){
+            this.state = STATE_EXPLODE;
+            if(this.explode <= -EXPLOSION_ANIM) {
+                this.die();
+                this.explodeTerrain();
+            }
+        }
         this.animations[this.state].update(delta);
         let grounded = [-5, 5].map(dx => this.game.getImageData(this.x + dx, this.y))
             .filter(d => !!d.a || d.a > 180)
@@ -126,6 +171,7 @@ export class Unicorn extends GameObject{
                     this.game.ctxLevel.clearRect(this.x-7,this.y-16, 14, 17);
                     this.game.ctxLevel.clearRect(this.x-6,this.y-16, 12, 18);
                     this.generateMud(3);
+                    this.y++;
                 }
                 
             }
@@ -146,6 +192,30 @@ export class Unicorn extends GameObject{
                     this.x+= this.direction;
                     let checkX = this.x + 5 * this.direction;
                     let checkY = this.y-2;
+                    let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
+                    if(!hitWall) {
+                        this.state = STATE_WALK;
+                    }
+                }
+            }
+            if(this.state == STATE_DIG_DIAGONAL) {
+                this.digTimer+=delta;
+                if(this.digTimer > DIG_INTERVAL) {
+                    this.digTimer -= DIG_INTERVAL;
+                    if(this.direction > 0) {
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-14, 15, 16);
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-13, 16, 14);
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-12, 17, 12);
+                    } else {
+                        this.game.ctxLevel.clearRect(this.x-8,this.y-14, 15, 16);
+                        this.game.ctxLevel.clearRect(this.x-9,this.y-13, 16, 14);
+                        this.game.ctxLevel.clearRect(this.x-10,this.y-12, 17, 12);
+                    }
+                    this.generateMud(3);
+                    this.x+= this.direction;
+                    this.y++;
+                    let checkX = this.x + 1 * this.direction;
+                    let checkY = this.y;
                     let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
                     if(!hitWall) {
                         this.state = STATE_WALK;

@@ -1,6 +1,6 @@
 import {Game} from './js/game.js'
 import { GameObject } from './js/gameobjects/gameobject.js';
-import { STATE_DIG_DOWN, STATE_DIG_HORIZONTAL, STATE_STOP, Unicorn } from './js/gameobjects/unicorn.js';
+import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_DIG_HORIZONTAL, STATE_EXPLODE, STATE_STOP, Unicorn } from './js/gameobjects/unicorn.js';
 
 const game = new Game();
 window.g = game;
@@ -71,5 +71,24 @@ document.addEventListener("DOMContentLoaded", ()=> {
     u.direction = -1;
     game.add(u);
 
-    
+    // digger diagonal
+    ctx.fillRect(10, 300, 200, 70);
+    u = new Unicorn(110,299);
+    u.state = STATE_DIG_DIAGONAL;
+    game.add(u);
+    u = new Unicorn(180,299);
+    u.state = STATE_DIG_DIAGONAL;
+    game.add(u);
+    u = new Unicorn(80,299);
+    u.state = STATE_DIG_DIAGONAL;
+    u.direction = -1;
+    game.add(u);
+
+    // explode
+    ctx.clearRect(90,340,16,16);
+    u = new Unicorn(98,350);
+    u.state = STATE_DIG_DOWN;
+    u.setExploding();
+    game.add(u);
+
 });
