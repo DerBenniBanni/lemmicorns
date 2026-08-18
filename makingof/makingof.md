@@ -50,3 +50,12 @@ The digging creates some mud-particles too.
 Lemmicorns now can also dig horizontal. Next up: diagonally down
 
 Final addition today: exploding Lemmicorns
+
+## 2026-08-17 - noting
+
+I fell asleep early with the children. No progress tonight... :-)
+
+## 2026-08-18 - Buttons and Mousepointer
+
+I added a buttonbar and buttons for the actions to choose.
+Also a mouse handler, that calculates the proper position of the mouse over the pixelated canvas

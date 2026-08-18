@@ -26,17 +26,34 @@ export class Game {
         this.ctxLevel = canvasLevel.getContext("2d", {willReadFrequently: true});
         this.canvas = canvasGame;
         canvasGame.addEventListener("mousemove", (e)=>this.readMouse(e));
-        canvasGame.addEventListener("touchstart", (e)=>this.readMouse(e, true));
-        canvasGame.addEventListener("click", (e)=>this.readMouse(e, true));
+        canvasGame.addEventListener("pointerdown", (e)=>this.readMouse(e, true));
         this.ctx = canvasGame.getContext("2d");
         this.sprites = new Spritesheet(spriteImage);
         let buttons = new Buttons(this);
-        buttons.add(new Button());
-        buttons.add(new Button());
-        buttons.add(new Button());
+        // stopper
+        let b = buttons.add(new Button());
+        b.addSprite(16,16,16,16,8,8);
+        // explode
+        b = buttons.add(new Button());
+        b.addSprite(48,48,16,16,8,8);
+        // dig down
+        b = buttons.add(new Button());
+        b.addSprite(40,56,8,8,12,8);
+        b.addSprite(40,48,8,8,12,18);
+        // dig diagonal
+        b = buttons.add(new Button());
+        b.addSprite(40,56,8,8,8,8);
+        b.addSprite(32,56,8,8,18,18);
+        // dig horizontal
+        b = buttons.add(new Button());
+        b.addSprite(40,56,8,8,8,12);
+        b.addSprite(32,48,8,8,18,12);
+
+
         this.gui.push(buttons);
         this.gameloop();
     }
+
 
     readMouse(e, clicked = false) {
         let rect = this.canvas.getBoundingClientRect();
@@ -99,8 +116,12 @@ export class Game {
         this.objects.forEach(o => o.render(this.ctx));
         this.gui.forEach(o => o.render(this.ctx));
         // mouse pointer
-        this.ctx.fillStyle = '#ff06';
-        this.ctx.fillRect(this.mouse.x - 4, this.mouse.y - 4, 8,8);
+        this.ctx.strokeStyle = '#ff08';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.rect(this.mouse.x - 8, this.mouse.y - 8, 16,16);
+        this.ctx.rect(this.mouse.x - 1, this.mouse.y - 1, 2,2);
+        this.ctx.stroke();
     }
 
     add(gameobject) {
