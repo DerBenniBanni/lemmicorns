@@ -59,3 +59,7 @@ I fell asleep early with the children. No progress tonight... :-)
 
 I added a buttonbar and buttons for the actions to choose.
 Also a mouse handler, that calculates the proper position of the mouse over the pixelated canvas
+
+## 2026-08-19 - buttons now have actions
+
+the buttons can now be activated and clicking on lemmicorns triggers the buttons action

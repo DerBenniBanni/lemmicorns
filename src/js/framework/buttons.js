@@ -8,6 +8,7 @@ export class Buttons {
         this.y = 5000;  // out of sight
         this.w = 0;
         this.h = 0;
+        this.activeButton = null;
     }
 
     add(button) {
@@ -41,6 +42,11 @@ export class Buttons {
     render(ctx) {
         this.buttons.forEach(b => b.render(ctx));
     }
+
+    setActive(btn) {
+        this.buttons.forEach(b => b.active = b === btn);
+        this.activeButton = btn;
+    }
 }
 
 export class Button {
@@ -49,10 +55,11 @@ export class Button {
         this.h = h;
         this.buttons = null;
         this.game = null;
-        this.action = null;
+        this.lemmicornAction = null;
         this.x = 0;
         this.y = 5000;
         this.sprites = [];
+        this.active = false;
     }
 
     addSprite(x,y,w,h,dx,dy) {
@@ -64,11 +71,19 @@ export class Button {
         ctx.translate(this.x, this.y);
         ctx.fillStyle = '#840';
         ctx.fillRect(0, 0, this.w, this.h);
-        ctx.fillStyle = '#310';
+        ctx.fillStyle = this.active ? 'rgb(107, 59, 13)' : '#310';
         ctx.fillRect(1, 1, this.w-2, this.h-2);
         this.sprites.forEach(s => {
             ctx.drawImage(this.game.sprites.img, s.x, s.y, s.w, s.h, s.dx, s.dy, s.w, s.h);
         });
         ctx.restore();
+    }
+    getBoundingBox() {
+        return {
+            x:this.x,
+            y:this.y,
+            w:this.w,
+            h:this.h
+        }
     }
 }

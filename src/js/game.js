@@ -1,9 +1,15 @@
 import { Button, Buttons } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
-import { STATE_STOP } from "./gameobjects/unicorn.js";
+import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP } from "./gameobjects/unicorn.js";
 
 const MAX_DELTA = 0.1;
+
+//obj needs to have getBoundingBox() defined
+function pointInBox(x,y, obj) {
+    let rect = obj.getBoundingBox();
+    return x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h;
+}
 
 export class Game {
     constructor() {
@@ -29,28 +35,33 @@ export class Game {
         canvasGame.addEventListener("pointerdown", (e)=>this.readMouse(e, true));
         this.ctx = canvasGame.getContext("2d");
         this.sprites = new Spritesheet(spriteImage);
-        let buttons = new Buttons(this);
+        this.buttons = new Buttons(this);
         // stopper
-        let b = buttons.add(new Button());
+        let b = this.buttons.add(new Button());
         b.addSprite(16,16,16,16,8,8);
+        b.lemmicornAction = (u,g) => u.state = STATE_STOP;
         // explode
-        b = buttons.add(new Button());
+        b = this.buttons.add(new Button());
         b.addSprite(48,48,16,16,8,8);
+        b.lemmicornAction = (u,g) => u.setExploding();
         // dig down
-        b = buttons.add(new Button());
+        b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,12,8);
         b.addSprite(40,48,8,8,12,18);
+        b.lemmicornAction = (u,g) => u.state = STATE_DIG_DOWN;
         // dig diagonal
-        b = buttons.add(new Button());
+        b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,8,8);
         b.addSprite(32,56,8,8,18,18);
+        b.lemmicornAction = (u,g) => u.state = STATE_DIG_DIAGONAL;
         // dig horizontal
-        b = buttons.add(new Button());
+        b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,8,12);
         b.addSprite(32,48,8,8,18,12);
+        b.lemmicornAction = (u,g) => u.willDigHorizontal = true;
 
 
-        this.gui.push(buttons);
+        this.gui.push(this.buttons);
         this.gameloop();
     }
 
@@ -75,7 +86,22 @@ export class Game {
         this.mouse.x = Math.round((ePos.x - playArea.x) * fact);
         this.mouse.y = Math.round((ePos.y - playArea.y) * fact);
         if(clicked) {
-            console.log("CLICK", this.mouse);
+            // check buttons first
+            let btnClicked = false;
+            for(let btn of this.buttons.buttons) {
+                if(pointInBox(this.mouse.x, this.mouse.y, btn)) {
+                    this.buttons.setActive(btn);
+                    break;
+                }
+            }
+            // then gameobjects
+            if(!btnClicked && !!this.buttons.activeButton && !!this.buttons.activeButton.lemmicornAction) {
+                for(let unicorn of this.getObjectsByType("unicorn")) {
+                    if(pointInBox(this.mouse.x, this.mouse.y, unicorn)) {
+                        this.buttons.activeButton.lemmicornAction(unicorn, this);
+                    }
+                }
+            }
         }
     }
 

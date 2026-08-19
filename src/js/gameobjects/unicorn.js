@@ -27,6 +27,8 @@ export class Unicorn extends GameObject{
         this.type = "unicorn";
         this.origin = new Point(8, 16);
         this.size = 16;
+        this.w = 16;
+        this.h = 16;
         this.direction = 1; // positive = right, negative = left
         this.animations = {
             "walk": new Animation(16, 16, this, [
@@ -98,7 +100,8 @@ export class Unicorn extends GameObject{
     }
 
     setExploding() {
-        this.explode = EXPLOSION_TIMEOUT;
+        if(this.explode > EXPLOSION_TIMEOUT)
+            this.explode = EXPLOSION_TIMEOUT;
     }
 
     explodeTerrain() {

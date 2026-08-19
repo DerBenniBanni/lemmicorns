@@ -3,4 +3,13 @@ export default class Point {
         this.x = x;
         this.y = y;
     }
+
+    getBoundingBox() {
+        return {
+            x:this.x,
+            y:this.y,
+            w:1,
+            h:1
+        }
+    }
 }
