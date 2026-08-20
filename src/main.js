@@ -1,5 +1,6 @@
 import {Game} from './js/game.js'
 import { GameObject } from './js/gameobjects/gameobject.js';
+import { Rainbow } from './js/gameobjects/rainbow.js';
 import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_DIG_HORIZONTAL, STATE_EXPLODE, STATE_STOP, Unicorn } from './js/gameobjects/unicorn.js';
 
 const game = new Game();
@@ -90,5 +91,9 @@ document.addEventListener("DOMContentLoaded", ()=> {
     u.state = STATE_DIG_DOWN;
     u.setExploding();
     game.add(u);
+
+    game.add(new Rainbow(300,350));
+    
+    ctx.fillRect(200, 348, 200, 10);
 
 });

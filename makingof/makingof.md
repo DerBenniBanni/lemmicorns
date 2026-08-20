@@ -63,3 +63,7 @@ Also a mouse handler, that calculates the proper position of the mouse over the 
 ## 2026-08-19 - buttons now have actions
 
 the buttons can now be activated and clicking on lemmicorns triggers the buttons action
+
+## 2026-08-20 - rainbow!
+
+Added a basic rainbow as target to reach
