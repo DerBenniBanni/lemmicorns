@@ -1,3 +1,4 @@
+import { TerrainPainter } from './js/framework/terrainpainter.js';
 import {Game} from './js/game.js'
 import { GameObject } from './js/gameobjects/gameobject.js';
 import { Rainbow } from './js/gameobjects/rainbow.js';
@@ -95,5 +96,8 @@ document.addEventListener("DOMContentLoaded", ()=> {
     game.add(new Rainbow(300,350));
     
     ctx.fillRect(200, 348, 200, 10);
+
+    let painter = new TerrainPainter(ctx);
+    painter.paint();
 
 });

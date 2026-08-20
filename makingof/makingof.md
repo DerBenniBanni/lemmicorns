@@ -64,6 +64,6 @@ Also a mouse handler, that calculates the proper position of the mouse over the 
 
 the buttons can now be activated and clicking on lemmicorns triggers the buttons action
 
-## 2026-08-20 - rainbow!
+## 2026-08-20 - mud, grass and arainbow!
 
-Added a basic rainbow as target to reach
+Added a basic rainbow as target to reach, and the level is now painted in brown and garnished with grass when the pixel above it is transparent
