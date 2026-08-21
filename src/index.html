@@ -35,15 +35,29 @@
             width: 100%;
             cursor: none;
         }
+        .crt::before {
+            content: " ";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(#fff1 50%, #0001 50%), linear-gradient(90deg, #f001, #0f01, #00f1);
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
     </style>
 </head>
-<body>
+<body class="crt">
     <div class="full">
         <canvas id="level" width="800" height="460"></canvas>
     </div>
     <div class="full">
         <canvas id="game" width="800" height="460"></canvas>
     </div>
+    
     
     
 </body>
