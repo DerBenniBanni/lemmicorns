@@ -81,6 +81,7 @@ export class Unicorn extends GameObject{
         this.fallHeight = 0;
         this.willDigHorizontal = false;
         this.explode = Infinity; // never
+        this.ohNo = false; // Audio startet?
     }
 
     getFunctionStateAfterFall() {
@@ -124,9 +125,14 @@ export class Unicorn extends GameObject{
         this.explode-=delta;
         if(this.explode <= 0){
             this.state = STATE_EXPLODE;
+            if(!this.ohNo) {
+                this.game.sfx.playAudio("sfx", "oh-no");
+                this.ohNo = true;
+            }
             if(this.explode <= -EXPLOSION_ANIM) {
                 this.die();
                 this.explodeTerrain();
+                this.game.sfx.playAudio("sfx", "explode");
             }
         }
         this.animations[this.state].update(delta);
@@ -147,6 +153,7 @@ export class Unicorn extends GameObject{
                 this.state = this.functionState;
                 if(this.fallHeight > FALL_HEIGHT_SURVIVABLE) {
                     this.die();
+                    this.game.sfx.playAudio("sfx", "tudd");
                     return;
                 }
             }
@@ -256,7 +263,15 @@ export class Unicorn extends GameObject{
             return;
         }
         this.renderStart(ctx);
-        this.animations[this.state].render(ctx, this.direction < 0)
+        this.animations[this.state].render(ctx, this.direction < 0);
+        
         this.renderEnd(ctx);
+        if(this.explode < Infinity) {
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.font = '9px monospace';
+            ctx.fillText(Math.ceil(this.explode), this.x, this.y-16);
+        }
     }
 }

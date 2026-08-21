@@ -60,6 +60,7 @@ export class Button {
         this.y = 5000;
         this.sprites = [];
         this.active = false;
+        this.count = Infinity;
     }
 
     addSprite(x,y,w,h,dx,dy) {
@@ -76,6 +77,13 @@ export class Button {
         this.sprites.forEach(s => {
             ctx.drawImage(this.game.sprites.img, s.x, s.y, s.w, s.h, s.dx, s.dy, s.w, s.h);
         });
+        if(this.count < Infinity){
+            ctx.fillStyle ='#fff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'hanging';
+            ctx.font = '10px monospace';
+            ctx.fillText(this.count, BUTTON_SIZE/2, 1);
+        }
         ctx.restore();
     }
     getBoundingBox() {
@@ -84,6 +92,12 @@ export class Button {
             y:this.y,
             w:this.w,
             h:this.h
+        }
+    }
+    callLemmicornAction(object, game) {
+        if(this.lemmicornAction && this.count > 0) {
+            this.lemmicornAction(object, game);
+            this.count--;
         }
     }
 }

@@ -2,6 +2,8 @@ import { Button, Buttons } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
 import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP } from "./gameobjects/unicorn.js";
+import SFXPlayer from "./sound/sfxplayer.js";
+import {sfxdata} from "./sound/sfx.js";
 
 const MAX_DELTA = 0.1;
 
@@ -25,9 +27,17 @@ export class Game {
         this.mouse = new Point(0,0);
 
         this.stoppers = [];
+        this.sfx = null;
     }
 
     init(canvasLevel, canvasGame, spriteImage) {
+        this.sfx = new SFXPlayer();
+        this.sfx.add("sfx",sfxdata,false);
+        this.sfx.addSample("sfx", "button", 2.5, 0.3);
+        this.sfx.addSample("sfx", "oh-no", 0, 0.5);
+        this.sfx.addSample("sfx", "aye", 2.9, 0.5);
+        this.sfx.addSample("sfx", "explode", 2, 0.5);
+        this.sfx.addSample("sfx", "tudd", 2.5, 0.4);
         this.canvasLevel = canvasLevel;
         this.ctxLevel = canvasLevel.getContext("2d", {willReadFrequently: true});
         this.canvas = canvasGame;
@@ -44,6 +54,7 @@ export class Game {
         b = this.buttons.add(new Button());
         b.addSprite(48,48,16,16,8,8);
         b.lemmicornAction = (u,g) => u.setExploding();
+        b.count = 10;
         // dig down
         b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,12,8);
@@ -91,6 +102,7 @@ export class Game {
             for(let btn of this.buttons.buttons) {
                 if(pointInBox(this.mouse.x, this.mouse.y, btn)) {
                     this.buttons.setActive(btn);
+                    this.sfx.playAudio("sfx", "button");
                     break;
                 }
             }
@@ -98,7 +110,9 @@ export class Game {
             if(!btnClicked && !!this.buttons.activeButton && !!this.buttons.activeButton.lemmicornAction) {
                 for(let unicorn of this.getObjectsByType("unicorn")) {
                     if(pointInBox(this.mouse.x, this.mouse.y, unicorn)) {
-                        this.buttons.activeButton.lemmicornAction(unicorn, this);
+                        this.buttons.activeButton.callLemmicornAction(unicorn, this);
+                        this.sfx.playAudio("sfx", "aye");
+                        break;
                     }
                 }
             }

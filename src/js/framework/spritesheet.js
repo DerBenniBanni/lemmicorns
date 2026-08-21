@@ -1,6 +1,9 @@
 export class Spritesheet {
-    constructor(url) {
+    constructor(img) {
+        this.img = img;
+        /*
         this.img = new Image();
         this.img.src = url;
+        */
     }
 }

@@ -64,6 +64,15 @@ Also a mouse handler, that calculates the proper position of the mouse over the 
 
 the buttons can now be activated and clicking on lemmicorns triggers the buttons action
 
-## 2026-08-20 - mud, grass and arainbow!
+## 2026-08-20 - mud, grass and a rainbow!
 
 Added a basic rainbow as target to reach, and the level is now painted in brown and garnished with grass when the pixel above it is transparent
+
+## 2026-08-21 - CRT effect and SFXadded
+
+The soundFX are creates with Soundbox. One Audiofile contains all FX.
+The player now also has a method to define samples, so only the wanted SFX can be started.
+A sound-spritesheet... :-)
+
+The CRT effect are two layered css gradients on a ::before element of the body
+

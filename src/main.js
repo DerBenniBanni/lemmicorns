@@ -11,7 +11,7 @@ const $ = (query) => document.getElementById(query);
 document.addEventListener("DOMContentLoaded", ()=> {
     game.init(
         $("level"), $("game"), 
-        'assets/sprites.png'
+        $('spritesheet')
     );
     let ctx = game.ctxLevel;
     ctx.fillStyle = "#fff";
