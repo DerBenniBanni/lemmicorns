@@ -76,3 +76,6 @@ A sound-spritesheet... :-)
 
 The CRT effect are two layered css gradients on a ::before element of the body
 
+## 2026-08-21 - level-loading and better SFX
+
+The leveldata is now defines as array of strings. blocks can be drawn, cleared, lemmicorn-spawner(s) and rainbow(s) can be placed. 

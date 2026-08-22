@@ -1,5 +1,6 @@
 import { Animation } from "../framework/animation.js";
 import Point from "../framework/point.js";
+import { pointInBox } from "../framework/utils.js";
 import { GameObject } from "./gameobject.js";
 import { getParticle, Particle, PARTICLEGROUP_HEART, PARTICLEGROUP_MUD } from "./particle.js";
 
@@ -235,7 +236,15 @@ export class Unicorn extends GameObject{
         }
         if(this.y >= this.game.canvasLevel.height) {
             this.die();
+            return;
         }
+
+        let rainbowReached = this.game.rainbows.find(r=> pointInBox(this.x, this.y, r));
+        if(rainbowReached){
+            this.game.sfx.playAudio("sfx", "target");
+            this.ttl = 0;
+        }
+
     }
 
     generateMud(amount) {

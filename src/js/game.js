@@ -1,17 +1,14 @@
 import { Button, Buttons } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
-import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP } from "./gameobjects/unicorn.js";
+import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
 import SFXPlayer from "./sound/sfxplayer.js";
 import {sfxdata} from "./sound/sfx.js";
+import { pointInBox } from "./framework/utils.js";
+import { Rainbow } from "./gameobjects/rainbow.js";
+import { TerrainPainter } from "./framework/terrainpainter.js";
 
 const MAX_DELTA = 0.1;
-
-//obj needs to have getBoundingBox() defined
-function pointInBox(x,y, obj) {
-    let rect = obj.getBoundingBox();
-    return x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h;
-}
 
 export class Game {
     constructor() {
@@ -21,6 +18,7 @@ export class Game {
         this.ctx = null;
         this.lastUpdate = performance.now();
         this.objects = [];
+        this.rainbows = [];
         this.gui = [];
         this.levelImageData= [];
         this.sprites = null;
@@ -33,9 +31,9 @@ export class Game {
     init(canvasLevel, canvasGame, spriteImage) {
         this.sfx = new SFXPlayer();
         this.sfx.add("sfx",sfxdata,false);
-        this.sfx.addSample("sfx", "button", 2.5, 0.3);
+        this.sfx.addSample("sfx", "button", 3.5, 0.5);
         this.sfx.addSample("sfx", "oh-no", 0, 0.5);
-        this.sfx.addSample("sfx", "aye", 2.9, 0.5);
+        this.sfx.addSample("sfx", "target", 1, 0.5);
         this.sfx.addSample("sfx", "explode", 2, 0.5);
         this.sfx.addSample("sfx", "tudd", 2.5, 0.4);
         this.canvasLevel = canvasLevel;
@@ -76,6 +74,36 @@ export class Game {
         this.gameloop();
     }
 
+    loadLevel(data) {
+        
+        this.objects = [];
+        let ctx = this.ctxLevel;
+        let self = this;
+        ctx.clearRect(0, 0, this.canvasLevel.width, this.canvasLevel.height);
+        ctx.fillStyle = '#fff';
+        data.forEach(def => {
+            let d = def.split(",")
+            switch(d[0]) {
+                case "f":
+                    ctx.fillRect(d[1]*1,d[2]*1,d[3]*1,d[4]*1);
+                    break;
+                case "c":
+                    ctx.clearRect(d[1]*1,d[2]*1,d[3]*1,d[4]*1);
+                    break;
+                case "l":
+                    for(let u = 0; u < d[3]*1; u++) {
+                        setTimeout(()=>self.add(new Unicorn(d[1]*1,d[2]*1)), u*1100);
+                    }
+                    break;
+                case "r":
+                    self.add(new Rainbow(d[1]*1,d[2]*1));
+                    break;
+            }
+        });
+        let painter = new TerrainPainter(ctx);
+        painter.paint();
+    }
+
 
     readMouse(e, clicked = false) {
         let rect = this.canvas.getBoundingClientRect();
@@ -111,7 +139,7 @@ export class Game {
                 for(let unicorn of this.getObjectsByType("unicorn")) {
                     if(pointInBox(this.mouse.x, this.mouse.y, unicorn)) {
                         this.buttons.activeButton.callLemmicornAction(unicorn, this);
-                        this.sfx.playAudio("sfx", "aye");
+                        this.sfx.playAudio("sfx", "button");
                         break;
                     }
                 }
@@ -148,6 +176,7 @@ export class Game {
 
     update(delta) {
         this.objects = this.objects.filter(o=>o.ttl > 0);
+        this.rainbows = this.objects.filter(o=>o.type == "rainbow"); // move toevel-loader
         this.objects.forEach(o => o.update(delta));
     }
 

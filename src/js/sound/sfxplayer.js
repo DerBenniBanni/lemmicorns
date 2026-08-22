@@ -29,18 +29,18 @@ export default class SFXPlayer {
             }*/
             audio.actx.decodeAudioData(audio.waveBuffer.slice(), (audioBuffer) => {
                 audio.audioBuffer = audioBuffer;
-                //audio.loaded = true;
+                audio.srcNode = audio.actx.createBufferSource();
+                audio.srcNode.buffer = audio.audioBuffer;
+                audio.srcNode.connect(audio.actx.destination);
+                audio.srcNode.loop = audio.loop;
+                if(sample && audio.samples[sample]) {
+                    let spl = audio.samples[sample];
+                    audio.srcNode.start(0, spl.start, spl.duration);
+                } else {
+                    audio.srcNode.start(0);
+                }
             });
-            audio.srcNode = audio.actx.createBufferSource();
-            audio.srcNode.buffer = audio.audioBuffer;
-            audio.srcNode.connect(audio.actx.destination);
-            audio.srcNode.loop = audio.loop;
-            if(sample && audio.samples[sample]) {
-                let spl = audio.samples[sample];
-                audio.srcNode.start(0, spl.start, spl.duration);
-            } else {
-                audio.srcNode.start(0);
-            }
+            
             
         }
     }

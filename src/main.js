@@ -13,6 +13,17 @@ document.addEventListener("DOMContentLoaded", ()=> {
         $("level"), $("game"), 
         $('spritesheet')
     );
+    let leveldata = [
+        "f,0,0,800,460", // filled box
+        "c,40,40,720,100", // cleared box
+        "c,400,160,200,200", // cleared box
+        "c,200,160,200,50",
+        "l,60,60,10", // 10 lemmicorns
+        "r,500,362", // rainbow
+    ];
+    game.loadLevel(leveldata);
+
+    /*
     let ctx = game.ctxLevel;
     ctx.fillStyle = "#fff";
     
@@ -24,7 +35,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         ctx.fillRect(10 + i*50, 50 + i*10,53,12);
     }
     for(let u = 0; u < 30; u++) {
-        setTimeout(()=>game.add(new Unicorn(50,30)), u*1100);
+        //setTimeout(()=>game.add(new Unicorn(50,30)), u*1100);
     }
     // lethal fall height
     ctx.fillRect(100, 260, 180, 10);
@@ -99,5 +110,6 @@ document.addEventListener("DOMContentLoaded", ()=> {
 
     let painter = new TerrainPainter(ctx);
     painter.paint();
+    */
 
 });

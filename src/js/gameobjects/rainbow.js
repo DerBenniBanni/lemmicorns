@@ -1,3 +1,4 @@
+import Point from "../framework/point.js";
 import { GameObject } from "./gameobject.js";
 
 const RAINBOWSIZE = 20;
@@ -7,7 +8,14 @@ export class Rainbow extends GameObject {
         this.type = "rainbow";
         this.sizeModBaseValue = 0;
         this.sizeMod = 4;
-        this.sizeModFact
+    }
+    getBoundingBox() {
+        return {
+            x:this.x-4,
+            y:this.y-16,
+            w:8,
+            h:16
+        }
     }
 
     update(delta) {
