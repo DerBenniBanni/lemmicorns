@@ -74,6 +74,10 @@ export class Game {
         this.gameloop();
     }
 
+    setGlobalCompositeOperation(ctx, value){
+        ctx.globalCompositeOperation = value*1 == 1 ? 'source-over' : 'destination-out';
+    }
+
     loadLevel(data) {
         
         this.objects = [];
@@ -84,18 +88,23 @@ export class Game {
         data.forEach(def => {
             let d = def.split(",")
             switch(d[0]) {
-                case "f":
-                    ctx.fillRect(d[1]*1,d[2]*1,d[3]*1,d[4]*1);
+                case "r":
+                    this.setGlobalCompositeOperation(ctx, d[1]*1);
+                    ctx.fillRect(d[2]*1,d[3]*1,d[4]*1,d[5]*1);
                     break;
+
                 case "c":
-                    ctx.clearRect(d[1]*1,d[2]*1,d[3]*1,d[4]*1);
+                    this.setGlobalCompositeOperation(ctx, d[1]*1);
+                    ctx.beginPath();
+                    ctx.arc(d[2]*1,d[3]*1,d[4]*1,0,Math.PI*2);
+                    ctx.fill();
                     break;
                 case "l":
                     for(let u = 0; u < d[3]*1; u++) {
                         setTimeout(()=>self.add(new Unicorn(d[1]*1,d[2]*1)), u*1100);
                     }
                     break;
-                case "r":
+                case "t":
                     self.add(new Rainbow(d[1]*1,d[2]*1));
                     break;
             }

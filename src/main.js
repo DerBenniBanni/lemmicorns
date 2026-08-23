@@ -14,12 +14,15 @@ document.addEventListener("DOMContentLoaded", ()=> {
         $('spritesheet')
     );
     let leveldata = [
-        "f,0,0,800,460", // filled box
-        "c,40,40,720,100", // cleared box
-        "c,400,160,200,200", // cleared box
-        "c,200,160,200,50",
+        "r,1,0,0,800,460", // filled box
+        "r,0,40,40,720,100", // cleared box
+        "r,0,400,160,200,200", // cleared box
+        "r,0,200,160,200,50",
+        "c,0,100, 120,30", // circle cleared
+        "c,0,300, 260,30", // circle cleared
+        "c,1,520, 260,30", // circle filled
         "l,60,60,10", // 10 lemmicorns
-        "r,500,362", // rainbow
+        "t,500,362", // rainbow
     ];
     game.loadLevel(leveldata);
 

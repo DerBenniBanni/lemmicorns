@@ -76,6 +76,11 @@ A sound-spritesheet... :-)
 
 The CRT effect are two layered css gradients on a ::before element of the body
 
-## 2026-08-21 - level-loading and better SFX
+## 2026-08-22 - level-loading and better SFX
 
 The leveldata is now defines as array of strings. blocks can be drawn, cleared, lemmicorn-spawner(s) and rainbow(s) can be placed. 
+
+## 2026-08-22 - improved level-definition
+
+Now circles are possible, amd a flag in the data controlls the fill/clear behaviour.
+The first level "Just dig!" is defined.

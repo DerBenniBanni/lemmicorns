@@ -137,7 +137,7 @@ export class Unicorn extends GameObject{
             }
         }
         this.animations[this.state].update(delta);
-        let grounded = [-5, 5].map(dx => this.game.getImageData(this.x + dx, this.y))
+        let grounded = [-3, 3].map(dx => this.game.getImageData(this.x + dx, this.y))
             .filter(d => !!d.a || d.a > 180)
             .length > 0;
         if(!grounded) {
@@ -158,12 +158,25 @@ export class Unicorn extends GameObject{
                     return;
                 }
             }
+            // set y to highest non air pixel
+            for(let i= 1; i<16; i++) {
+                if(this.y - i >= 0) {
+                let d = this.game.getImageData(this.x, this.y-i);
+                    if(d.a < 180) {
+                        this.y -= i-1;
+                        break;
+                    }
+                }
+                if(i == 15) {
+                    this.die();
+                }
+            }
             this.fallingTimeout = 0;
             this.fallHeight = 0;
             if(this.state == STATE_WALK) {
                 let nextX = this.x + SPEED * delta* this.direction;
                 let checkX = this.x + 5*this.direction;
-                let checkY = this.y-2;
+                let checkY = this.y-6;
                 let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
                 if(hitWall && this.willDigHorizontal) {
                     this.state = STATE_DIG_HORIZONTAL;
