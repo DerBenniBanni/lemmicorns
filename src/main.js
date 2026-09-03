@@ -13,7 +13,18 @@ document.addEventListener("DOMContentLoaded", ()=> {
         $("level"), $("game"), 
         $('spritesheet')
     );
-    let leveldata = [
+    //titlescreen
+    game.levels.push([
+        'p,1,20,171,81,125,81,119,121,151,119,120,124,117,157,161,157', 'p,1,20,184,154,191,81,216,121,244,81,237,157', 'p,1,20,328,158,332,91', 'p,1,20,334,67,335,56', 'p,1,20,255,158,265,81,291,121,312,87,306,158', 'p,1,20,396,93,370,85,350,115,350,141,374,165,398,153', 'p,1,20,458,88,458,88,458,88,431,86,417,123,430,160,458,163,477,130,459,87', 'p,1,20,498,160,495,88,530,84,550,103,549,125,506,137,549,166', 'p,1,20,568,165,569,91,609,163,620,94', 'p,1,20,691,99,691,99,669,80,642,89,634,116,677,139,687,166,662,184,80,184,98,61',
+        "r,1,0,360,800,20",
+        "r,0,50,360,700,10",
+        "t,500,372", // rainbow
+        "l,300,350,3", // lemmicorns
+        "i,400,200,CHASING RAINBOWS",
+        "i,500,300,Let them reach the rainbow!"
+    ]);
+    //just dig, dont fall too deep!
+    game.levels.push([
         "r,1,0,0,800,460", // filled box
         "r,0,40,40,720,100", // cleared box
         "r,0,400,160,200,200", // cleared box
@@ -21,10 +32,11 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "c,0,100, 120,30", // circle cleared
         "c,0,300, 260,30", // circle cleared
         "c,1,520, 260,30", // circle filled
+        "p,1,30,100,40,200,110,300,50,400,90", // Path, filled, 15 linewidth
         "l,60,60,10", // 10 lemmicorns
         "t,500,362", // rainbow
-    ];
-    game.loadLevel(leveldata);
+    ]);
+    game.loadLevel(0);
 
     /*
     let ctx = game.ctxLevel;

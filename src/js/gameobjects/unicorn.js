@@ -256,6 +256,7 @@ export class Unicorn extends GameObject{
         if(rainbowReached){
             this.game.sfx.playAudio("sfx", "target");
             this.ttl = 0;
+            this.game.checkLevelCleared();
         }
 
     }

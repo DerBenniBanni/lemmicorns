@@ -84,3 +84,9 @@ The leveldata is now defines as array of strings. blocks can be drawn, cleared, 
 
 Now circles are possible, amd a flag in the data controlls the fill/clear behaviour.
 The first level "Just dig!" is defined.
+
+## 2026-08-23 until 2026-09-02 - nothing
+
+We moved to another flat, no time for gamedev...
+
+## 2026-09-03 - 

@@ -7,6 +7,7 @@ import {sfxdata} from "./sound/sfx.js";
 import { pointInBox } from "./framework/utils.js";
 import { Rainbow } from "./gameobjects/rainbow.js";
 import { TerrainPainter } from "./framework/terrainpainter.js";
+import { Text } from "./framework/text.js";
 
 const MAX_DELTA = 0.1;
 
@@ -26,6 +27,8 @@ export class Game {
 
         this.stoppers = [];
         this.sfx = null;
+        this.levels = [];
+        this.level = 0; // titlescreen
     }
 
     init(canvasLevel, canvasGame, spriteImage) {
@@ -78,13 +81,14 @@ export class Game {
         ctx.globalCompositeOperation = value*1 == 1 ? 'source-over' : 'destination-out';
     }
 
-    loadLevel(data) {
-        
+    loadLevel(idx) {
+        let data = this.levels[idx];        
         this.objects = [];
         let ctx = this.ctxLevel;
         let self = this;
         ctx.clearRect(0, 0, this.canvasLevel.width, this.canvasLevel.height);
         ctx.fillStyle = '#fff';
+        ctx.strokeStyle = '#fff';
         data.forEach(def => {
             let d = def.split(",")
             switch(d[0]) {
@@ -107,6 +111,20 @@ export class Game {
                 case "t":
                     self.add(new Rainbow(d[1]*1,d[2]*1));
                     break;
+                case "p":
+                    this.setGlobalCompositeOperation(ctx, d[1]*1);
+                    ctx.lineWidth = d[2];
+                    ctx.lineJoin = "round";
+                    ctx.lineCap = "round";
+                    ctx.beginPath();
+                    ctx.moveTo(d[3], d[4]);
+                    for(let i = 5; i < d.length -1; i+=2) {
+                        ctx.lineTo(d[i], d[i+1]);
+                    }
+                    ctx.stroke();
+                    break;
+                case "i":
+                    self.gui.push(new Text(d[1]*1, d[2]*1, d[3]));
             }
         });
         let painter = new TerrainPainter(ctx);
@@ -158,6 +176,15 @@ export class Game {
 
     getObjectsByType(type) {
         return this.objects.filter(o => o.type == type)
+    }
+
+    checkLevelCleared() {
+        if(this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length) {
+            if(this.level < this.levels.length - 1) {
+                this.level++;
+                this.loadLevel(this.level);
+            }
+        }
     }
 
     gameloop() {
