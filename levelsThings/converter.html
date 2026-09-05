@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        textarea {
+            width:47vw;
+            height: 95vh;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="in"></textarea>
+    <textarea id="out"></textarea>
+    <script type="text/javascript">
+        let input = document.querySelector('#in'); 
+        input.addEventListener("input", ()=>{
+            let things ={};
+            try {
+                things = JSON.parse(input.value);
+            } catch(error) {
+                return;
+            }
+            result = [];
+            things.data.forEach(d => {
+                if(d._thing == "rectangle") {
+                    result.push([
+                        "r",
+                        d.fill == '#000000' ? "0": "1",
+                        d.x,
+                        d.y,
+                        d.w,
+                        d.h
+                    ].join(","));
+                } else if(d._thing == "path") {
+                    let res = [
+                        "p",
+                        "1",
+                        "20"
+                    ];
+                    d._points.forEach(p=>{
+                        res.push(p.x);
+                        res.push(p.y);
+                    })
+                    result.push(res.join(","));
+                } else if(d._thing == "circle") {
+                    result.push([
+                        "c",
+                        d.fill == '#000000' ? "0": "1",
+                        d.x,
+                        d.y,
+                        d.r
+                    ].join(","));
+                }
+            });
+            document.getElementById("out").value = JSON.stringify(result, null, 4);
+        });
+    </script>
+</body>
+</html>

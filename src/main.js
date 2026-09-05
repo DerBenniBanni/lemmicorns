@@ -37,8 +37,25 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "l,60,60,10", // 10 lemmicorns
         "t,500,362", // rainbow
         "a,0,0,3,3,0",
-        "i,450,80,Just Dig",
+        "i,450,80,Just Dig...",
         "i,500,170,Dont let them fall too high!",
+    ]);
+    game.levels.push([
+        "r,1,66,65,597,5",
+        "p,1,20,304,120,534,231,629,232",
+        "p,1,20,753,258,250,393",
+        "r,1,60,382,456,56",
+        "c,1,632,396,36",
+        "c,1,696,391,20",
+        "c,1,737,386,10",
+        "r,1,199,68,125,61",
+        "r,1,207,127,5,264",
+        "a,1,1,0,0,1",
+        "l,80,10,10",
+        "t,160,385",
+        "i,500,10,The needs of the many outweigh the needs of the few.",
+        "i,350,400,...especially in times of not many options",
+        
     ]);
     game.loadLevel(0);
 

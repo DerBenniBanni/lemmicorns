@@ -94,3 +94,7 @@ We moved to another flat, no time for gamedev...
 the terrain now can be built using paths
 Texts can be displayed
 Multiple levels can be loaded
+
+## 2026-09-05 - more levels, and a leveleditor-tool
+
+I now can use a custom tool for drawing boxes, cirles and paths to create levels. The data from the toolis converted to the games minimal dataformat,and i just have to copy paste it and add some texts.
