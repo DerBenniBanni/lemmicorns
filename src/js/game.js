@@ -84,6 +84,7 @@ export class Game {
     loadLevel(idx) {
         let data = this.levels[idx];        
         this.objects = [];
+        this.gui = this.gui.filter(g=>!g.levelBound);
         let ctx = this.ctxLevel;
         let self = this;
         ctx.clearRect(0, 0, this.canvasLevel.width, this.canvasLevel.height);
@@ -124,7 +125,14 @@ export class Game {
                     ctx.stroke();
                     break;
                 case "i":
-                    self.gui.push(new Text(d[1]*1, d[2]*1, d[3]));
+                    let size = d.length >= 5 ? d[4] : 12;
+                    self.gui.push(new Text(d[1]*1, d[2]*1, d[3], size));
+                    break;
+                case "a":
+                    for(let i = 1; i < d.length; i++) {
+                        this.buttons.buttons[i-1].count =d[i]*1;
+                    }
+                    break;
             }
         });
         let painter = new TerrainPainter(ctx);
@@ -179,7 +187,7 @@ export class Game {
     }
 
     checkLevelCleared() {
-        if(this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length) {
+        if(this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length == 0) {
             if(this.level < this.levels.length - 1) {
                 this.level++;
                 this.loadLevel(this.level);

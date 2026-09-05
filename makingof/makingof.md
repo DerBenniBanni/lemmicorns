@@ -89,4 +89,8 @@ The first level "Just dig!" is defined.
 
 We moved to another flat, no time for gamedev...
 
-## 2026-09-03 - 
+## 2026-09-03 - lines and text, multiple levels support
+
+the terrain now can be built using paths
+Texts can be displayed
+Multiple levels can be loaded

@@ -20,8 +20,9 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "r,0,50,360,700,10",
         "t,500,372", // rainbow
         "l,300,350,3", // lemmicorns
-        "i,400,200,CHASING RAINBOWS",
-        "i,500,300,Let them reach the rainbow!"
+        "i,400,200,CHASING RAINBOWS,30",
+        "i,500,300,Let them reach the rainbow!",
+        "a,0,0,0,0,0", // lemmicorn actions available (in order of buttons)
     ]);
     //just dig, dont fall too deep!
     game.levels.push([
@@ -35,6 +36,9 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "p,1,30,100,40,200,110,300,50,400,90", // Path, filled, 15 linewidth
         "l,60,60,10", // 10 lemmicorns
         "t,500,362", // rainbow
+        "a,0,0,3,3,0",
+        "i,450,80,Just Dig",
+        "i,500,170,Dont let them fall too high!",
     ]);
     game.loadLevel(0);
 
