@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         'p,1,20,171,81,125,81,119,121,151,119,120,124,117,157,161,157', 'p,1,20,184,154,191,81,216,121,244,81,237,157', 'p,1,20,328,158,332,91', 'p,1,20,334,67,335,56', 'p,1,20,255,158,265,81,291,121,312,87,306,158', 'p,1,20,396,93,370,85,350,115,350,141,374,165,398,153', 'p,1,20,458,88,458,88,458,88,431,86,417,123,430,160,458,163,477,130,459,87', 'p,1,20,498,160,495,88,530,84,550,103,549,125,506,137,549,166', 'p,1,20,568,165,569,91,609,163,620,94', 'p,1,20,691,99,691,99,669,80,642,89,634,116,677,139,687,166,662,184,80,184,98,61',
         "r,1,0,360,800,20",
         "r,0,50,360,700,10",
-        "t,500,372", // rainbow
+        "t,500,372,3", // rainbow, 3 lemmicorns to be saved!
         "l,300,350,3", // lemmicorns
         "i,400,200,CHASING RAINBOWS,30",
         "i,500,300,Let them reach the rainbow!",
@@ -34,10 +34,10 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "c,0,300, 260,30", // circle cleared
         "c,1,520, 260,30", // circle filled
         "p,1,30,100,40,200,110,300,50,400,90", // Path, filled, 15 linewidth
-        "l,60,60,10", // 10 lemmicorns
-        "t,500,362", // rainbow
+        "l,60,90,10", // 10 lemmicorns
+        "t,500,362,8", // rainbow, 8 to save
         "a,0,0,3,3,0",
-        "i,450,80,Just Dig...",
+        "i,320,90,Just Dig...",
         "i,500,170,Dont let them fall too high!",
     ]);
     game.levels.push([
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "r,1,207,127,5,264",
         "a,1,1,0,0,1",
         "l,80,10,10",
-        "t,160,385",
+        "t,160,385,8", // 8 to save
         "i,500,10,The needs of the many outweigh the needs of the few.",
         "i,350,400,...especially in times of not many options",
         

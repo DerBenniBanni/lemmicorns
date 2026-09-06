@@ -1,13 +1,15 @@
-import { Button, Buttons } from "./framework/buttons.js";
+import { Button, Buttons, Spacer } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
 import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
 import SFXPlayer from "./sound/sfxplayer.js";
 import {sfxdata} from "./sound/sfx.js";
+import {musicdata} from "./sound/music.js";
 import { pointInBox } from "./framework/utils.js";
 import { Rainbow } from "./gameobjects/rainbow.js";
 import { TerrainPainter } from "./framework/terrainpainter.js";
 import { Text } from "./framework/text.js";
+import { Dispender } from "./gameobjects/dispenser.js";
 
 const MAX_DELTA = 0.1;
 
@@ -27,8 +29,15 @@ export class Game {
 
         this.stoppers = [];
         this.sfx = null;
+        this.music = false;
         this.levels = [];
         this.level = 0; // titlescreen
+
+        this.lemToSave = Infinity;
+        this.lemSaved = 0;
+
+        //special button for speedup
+        this.speedup = null;
     }
 
     init(canvasLevel, canvasGame, spriteImage) {
@@ -39,6 +48,7 @@ export class Game {
         this.sfx.addSample("sfx", "target", 1, 0.5);
         this.sfx.addSample("sfx", "explode", 2, 0.5);
         this.sfx.addSample("sfx", "tudd", 2.5, 0.4);
+        this.sfx.add("music", musicdata, true);
         this.canvasLevel = canvasLevel;
         this.ctxLevel = canvasLevel.getContext("2d", {willReadFrequently: true});
         this.canvas = canvasGame;
@@ -71,10 +81,26 @@ export class Game {
         b.addSprite(40,56,8,8,8,12);
         b.addSprite(32,48,8,8,18,12);
         b.lemmicornAction = (u,g) => u.willDigHorizontal = true;
+        // spacer
+        b = this.buttons.add(new Spacer());
+        // armageddon
+        b = this.buttons.add(new Button());
+        b.addSprite(48,80,16,16,8,8);
+        b.clickAction = (g) => g.armageddon();
+        // speed up
+        b = this.buttons.add(new Button());
+        b.addSprite(32,48,8,8,18,12);
+        b.addSprite(32,48,8,8,8,12);
+        this.speedup = b;
+        
 
 
         this.gui.push(this.buttons);
         this.gameloop();
+    }
+
+    armageddon() {
+        this.getObjectsByType("unicorn").forEach((u,i) => u.setExploding((i+1) / 2));
     }
 
     setGlobalCompositeOperation(ctx, value){
@@ -82,6 +108,9 @@ export class Game {
     }
 
     loadLevel(idx) {
+        if(this.speedup) {
+            this.speedup.active = false;
+        }
         let data = this.levels[idx];        
         this.objects = [];
         this.gui = this.gui.filter(g=>!g.levelBound);
@@ -105,12 +134,12 @@ export class Game {
                     ctx.fill();
                     break;
                 case "l":
-                    for(let u = 0; u < d[3]*1; u++) {
-                        setTimeout(()=>self.add(new Unicorn(d[1]*1,d[2]*1)), u*1100);
-                    }
+                    self.add(new Dispender(d[1]*1,d[2]*1, d[3]*1));
                     break;
                 case "t":
                     self.add(new Rainbow(d[1]*1,d[2]*1));
+                    self.lemToSave= d[3]*1;
+                    self.lemSaved = 0;
                     break;
                 case "p":
                     this.setGlobalCompositeOperation(ctx, d[1]*1);
@@ -164,7 +193,12 @@ export class Game {
             let btnClicked = false;
             for(let btn of this.buttons.buttons) {
                 if(pointInBox(this.mouse.x, this.mouse.y, btn)) {
+                    if(btn === this.speedup && btn.active) {
+                        btn.active = false;
+                        break;
+                    }
                     this.buttons.setActive(btn);
+                    btn.callClickAction(this);
                     this.sfx.playAudio("sfx", "button");
                     break;
                 }
@@ -180,6 +214,10 @@ export class Game {
                 }
             }
         }
+        if(!this.music) {
+            this.sfx.playAudio("music");
+            this.music = true;
+        }
     }
 
     getObjectsByType(type) {
@@ -187,9 +225,21 @@ export class Game {
     }
 
     checkLevelCleared() {
-        if(this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length == 0) {
-            if(this.level < this.levels.length - 1) {
-                this.level++;
+        if(this.levels.length == 0) {
+            // not loaded yet
+            return;
+        }
+        let stillToEnter = 0;
+        this.getObjectsByType("dispenser").forEach(d => stillToEnter += d.count);
+        if(stillToEnter <= 0 && this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length == 0) {
+            if(this.lemSaved >= this.lemToSave) {
+                // TODO: display "NEXT LEVEL"
+                if(this.level < this.levels.length - 1) {
+                    this.level++;
+                    this.loadLevel(this.level);
+                }
+            } else {
+                // TODO: display "RESTART LEVEL"
                 this.loadLevel(this.level);
             }
         }
@@ -219,6 +269,12 @@ export class Game {
     }
 
     update(delta) {
+        if(this.speedup && this.speedup.active) {
+            delta*=3;
+        }
+        if(this.getObjectsByType("unicorn").length == 0 ) {
+            this.checkLevelCleared();
+        }
         this.objects = this.objects.filter(o=>o.ttl > 0);
         this.rainbows = this.objects.filter(o=>o.type == "rainbow"); // move toevel-loader
         this.objects.forEach(o => o.update(delta));

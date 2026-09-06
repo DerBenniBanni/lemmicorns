@@ -98,3 +98,8 @@ Multiple levels can be loaded
 ## 2026-09-05 - more levels, and a leveleditor-tool
 
 I now can use a custom tool for drawing boxes, cirles and paths to create levels. The data from the toolis converted to the games minimal dataformat,and i just have to copy paste it and add some texts.
+
+## 2026-09-06 - ka-BOOM, fast forward and music
+
+I added a button to explode all left over unicorns, and a button to speed things up (3x faster)
+Also added the first music loop, a funky "Fur Elise" from Ludwig van Beethoven. Should not trigger any copyright issues. 

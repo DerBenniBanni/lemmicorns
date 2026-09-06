@@ -55,7 +55,8 @@ export class Button {
         this.h = h;
         this.buttons = null;
         this.game = null;
-        this.lemmicornAction = null;
+        this.lemmicornAction = null; // action after a lemmicorn is clicked
+        this.clickAction = null; // direct button action
         this.x = 0;
         this.y = 5000;
         this.sprites = [];
@@ -99,5 +100,19 @@ export class Button {
             this.lemmicornAction(object, game);
             this.count--;
         }
+    }
+    callClickAction(game) {
+        if(this.clickAction) {
+            this.clickAction(game);
+        }
+    }
+}
+
+export class Spacer extends Button {
+    constructor(w = BUTTON_SIZE, h = BUTTON_SIZE) {
+        super(w,h);
+    }
+    render(ctx) {
+        // nothing
     }
 }

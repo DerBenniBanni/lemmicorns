@@ -101,9 +101,9 @@ export class Unicorn extends GameObject{
         this.generateMud(10);
     }
 
-    setExploding() {
-        if(this.explode > EXPLOSION_TIMEOUT)
-            this.explode = EXPLOSION_TIMEOUT;
+    setExploding(timeout = EXPLOSION_TIMEOUT) {
+        if(this.explode > timeout)
+            this.explode = timeout;
     }
 
     explodeTerrain() {
@@ -256,6 +256,7 @@ export class Unicorn extends GameObject{
         if(rainbowReached){
             this.game.sfx.playAudio("sfx", "target");
             this.ttl = 0;
+            this.game.lemSaved++;
             this.game.checkLevelCleared();
         }
 
