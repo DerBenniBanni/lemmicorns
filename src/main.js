@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "l,300,350,3", // lemmicorns
         "i,400,200,CHASING RAINBOWS,30",
         "i,500,300,Let them reach the rainbow!",
-        "a,0,0,0,0,0", // lemmicorn actions available (in order of buttons)
+        "a,0,0,0,0,0,0", // lemmicorn actions available (in order of buttons)
     ]);
     //just dig, dont fall too deep!
     game.levels.push([
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "p,1,30,100,40,200,110,300,50,400,90", // Path, filled, 15 linewidth
         "l,60,90,10", // 10 lemmicorns
         "t,500,362,8", // rainbow, 8 to save
-        "a,0,0,3,3,0",
+        "a,0,0,3,3,0,0",
         "i,320,90,Just Dig...",
         "i,500,170,Dont let them fall too high!",
     ]);
@@ -50,12 +50,20 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "c,1,737,386,10",
         "r,1,199,68,125,61",
         "r,1,207,127,5,264",
-        "a,1,1,0,0,1",
+        "a,1,2,0,0,1,0",
         "l,80,10,10",
         "t,160,385,8", // 8 to save
         "i,500,10,The needs of the many outweigh the needs of the few.",
         "i,350,400,...especially in times of not many options",
         
+    ]);
+    game.levels.push([
+        "r,1,0,310,800,189",
+        "r,0,21,300,468,74",
+        "l,80,320,10",
+        "t,660,312,8", // 8 to save
+        "i,350,200,Bifrost to the rescue!",
+        "a,1,1,0,0,0,2",
     ]);
     game.loadLevel(0);
 

@@ -19,6 +19,7 @@ export const STATE_DIG_HORIZONTAL = "dig_h";
 export const STATE_DIG_DIAGONAL = "dig_d";
 export const STATE_FALLING = "fall";
 export const STATE_EXPLODE = "explode";
+export const STATE_BUILD_BRIDGE = "bridge";
 
 const pixelTerrain = (imageData) => !!imageData.a && imageData.a > 180;
 
@@ -74,6 +75,14 @@ export class Unicorn extends GameObject{
                 20, 0.1,
                 22, 0.1,
             ]),
+            "bridge": new Animation(16,16, this, [
+                16, 0.3,
+                17, 0.2,
+                1, 0.1,
+                18, 0.3,
+                3, 0.1,
+                17, 0.2,
+            ]),
         };
         this.state = STATE_WALK;
         this.functionState = STATE_WALK;
@@ -83,6 +92,7 @@ export class Unicorn extends GameObject{
         this.willDigHorizontal = false;
         this.explode = Infinity; // never
         this.ohNo = false; // Audio startet?
+        this.bridgeDuration = 0;
     }
 
     getFunctionStateAfterFall() {
@@ -124,6 +134,7 @@ export class Unicorn extends GameObject{
     update(delta) {
         super.update(delta);
         this.explode-=delta;
+        this.bridgeDuration-=delta;
         if(this.explode <= 0){
             this.state = STATE_EXPLODE;
             if(!this.ohNo) {
@@ -173,7 +184,22 @@ export class Unicorn extends GameObject{
             }
             this.fallingTimeout = 0;
             this.fallHeight = 0;
-            if(this.state == STATE_WALK) {
+            if(this.state == STATE_BUILD_BRIDGE) {
+                if(this.bridgeDuration <= 0) {
+                        this.state = STATE_WALK;
+                } else {
+                    let ctx = this.game.ctxLevel;
+                    ctx.lineWidth = 1;
+                    ['f00','ff0','0f0','0ff','00f'].forEach((c,i)=> {
+                        ctx.beginPath();
+                        ctx.strokeStyle = '#'+c;
+                        ctx.moveTo(this.x + 5*this.direction, this.y -2 + i);
+                        ctx.lineTo(this.x + 8*this.direction, this.y -2 + i);
+                        ctx.stroke();
+                    });
+                }
+            }
+            if(this.state == STATE_WALK || this.state == STATE_BUILD_BRIDGE) {
                 let nextX = this.x + SPEED * delta* this.direction;
                 let checkX = this.x + 5*this.direction;
                 let checkY = this.y-6;
@@ -184,6 +210,9 @@ export class Unicorn extends GameObject{
                 }else if(hitWall || this.checkStopperCollide(checkX, checkY)) {
                     this.direction *= -1;
                     nextX = this.x;
+                    if(this.state == STATE_BUILD_BRIDGE) {
+                        this.state = STATE_WALK;
+                    }
                 }
                 this.x = nextX;
             }
@@ -198,7 +227,7 @@ export class Unicorn extends GameObject{
                     this.y++;
                 }
                 
-            }
+            } 
             if(this.state == STATE_DIG_HORIZONTAL) {
                 this.digTimer+=delta;
                 if(this.digTimer > DIG_INTERVAL) {
@@ -221,7 +250,7 @@ export class Unicorn extends GameObject{
                         this.state = STATE_WALK;
                     }
                 }
-            }
+            } 
             if(this.state == STATE_DIG_DIAGONAL) {
                 this.digTimer+=delta;
                 if(this.digTimer > DIG_INTERVAL) {
@@ -245,7 +274,8 @@ export class Unicorn extends GameObject{
                         this.state = STATE_WALK;
                     }
                 }
-            }
+            } 
+            
         }
         if(this.y >= this.game.canvasLevel.height) {
             this.die();

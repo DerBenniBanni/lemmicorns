@@ -103,3 +103,8 @@ I now can use a custom tool for drawing boxes, cirles and paths to create levels
 
 I added a button to explode all left over unicorns, and a button to speed things up (3x faster)
 Also added the first music loop, a funky "Fur Elise" from Ludwig van Beethoven. Should not trigger any copyright issues. 
+
+
+## 2026-09-07 - bridge builder as new action
+
+I added a new button to create a bridge builder that creates a rainbow-bridge in an upward angle - mor level design possibilities

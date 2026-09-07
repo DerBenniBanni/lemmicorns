@@ -1,7 +1,7 @@
 import { Button, Buttons, Spacer } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
-import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
+import { STATE_BUILD_BRIDGE, STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
 import SFXPlayer from "./sound/sfxplayer.js";
 import {sfxdata} from "./sound/sfx.js";
 import {musicdata} from "./sound/music.js";
@@ -81,6 +81,15 @@ export class Game {
         b.addSprite(40,56,8,8,8,12);
         b.addSprite(32,48,8,8,18,12);
         b.lemmicornAction = (u,g) => u.willDigHorizontal = true;
+        // bridge
+        b = this.buttons.add(new Button());
+        for(let i = 0; i < 12; i++) {
+            b.addSprite(63,64,1,4,10+i,Math.floor(18-i/2));
+        }
+        b.lemmicornAction = (u,g) => {
+            u.state = STATE_BUILD_BRIDGE;
+            u.bridgeDuration = 6; //seconds
+        }
         // spacer
         b = this.buttons.add(new Spacer());
         // armageddon
@@ -164,6 +173,7 @@ export class Game {
                     break;
             }
         });
+        this.setGlobalCompositeOperation(ctx, 1);
         let painter = new TerrainPainter(ctx);
         painter.paint();
     }
