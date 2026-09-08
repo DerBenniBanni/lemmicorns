@@ -2,12 +2,13 @@ import { GameObject } from "./gameobject.js";
 import { Unicorn } from "./unicorn.js";
 
 export class Dispender extends GameObject{
-    constructor(x, y, count, interval = 1) {
+    constructor(x, y, count, direction = 1, interval = 1) {
         super(x,y);
         this.type = "dispenser";
         this.count = count;
         this.interval = interval;
         this.timer = 0;
+        this.direction = direction;
     }
 
     update(delta) {
@@ -16,7 +17,8 @@ export class Dispender extends GameObject{
         }
         this.timer += delta;
         if(this.timer > this.interval) {
-            this.game.add(new Unicorn(this.x, this.y));
+            let u = this.game.add(new Unicorn(this.x, this.y));
+            u.direction = this.direction;
             this.count--;
             this.timer -= this.interval;
         }

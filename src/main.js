@@ -1,5 +1,6 @@
+import { MenuButton } from './js/framework/buttons.js';
 import { TerrainPainter } from './js/framework/terrainpainter.js';
-import {Game} from './js/game.js'
+import {Game, STATE_LEVEL_RUNNING, STATE_MENU} from './js/game.js'
 import { GameObject } from './js/gameobjects/gameobject.js';
 import { Rainbow } from './js/gameobjects/rainbow.js';
 import { STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_DIG_HORIZONTAL, STATE_EXPLODE, STATE_STOP, Unicorn } from './js/gameobjects/unicorn.js';
@@ -19,9 +20,9 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "r,1,0,360,800,20",
         "r,0,50,360,700,10",
         "t,500,372,3", // rainbow, 3 lemmicorns to be saved!
-        "l,300,350,3", // lemmicorns
+        "l,300,350,3,1", // lemmicorns
         "i,400,200,CHASING RAINBOWS,30",
-        "i,500,300,Let them reach the rainbow!",
+        "i,500,385,Let them reach the rainbow!",
         "a,0,0,0,0,0,0", // lemmicorn actions available (in order of buttons)
     ]);
     //just dig, dont fall too deep!
@@ -65,7 +66,36 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "i,350,200,Bifrost to the rescue!",
         "a,1,1,0,0,0,2",
     ]);
+    game.levels.push([
+        "r,1,56,106,142,93",
+        "r,1,586,105,142,93",
+        "r,0,55,105,140,82",
+        "r,0,590,101,140,82",
+        "r,1,191,236,99,32",
+        "r,1,496,233,99,32",
+        "r,1,586,300,99,52",
+        "r,1,94,300,99,52",
+        "r,1,149,347,467,13",
+        "c,1,218,93,26",
+        "c,1,565,97,26",
+        "c,1,265,75,26",
+        "c,1,518,79,26",
+        "c,1,314,66,26",
+        "c,1,363,60,29",
+        "c,1,416,60,29",
+        "c,1,468,65,26",
+        "t,400,350,10", // 10 to save
+        "i,400,100,Double Trouble!",
+        "a,6,1,0,0,4,0",
+        "l,140,150,10,-1",,
+        "l,640,150,10,1",
+    ])
     game.loadLevel(0);
+    game.state = STATE_MENU;
+    game.gui.push(new MenuButton(400,280,200,50,"START",(game, btn)=>{
+        game.state = STATE_LEVEL_RUNNING;
+        game.gui = game.gui.filter(elem => elem !== btn);
+    }));
 
     /*
     let ctx = game.ctxLevel;

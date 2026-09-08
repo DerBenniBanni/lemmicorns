@@ -51,6 +51,7 @@ export class Buttons {
 
 export class Button {
     constructor(w = BUTTON_SIZE, h = BUTTON_SIZE) {
+        this.type = "button";
         this.w = w;
         this.h = h;
         this.buttons = null;
@@ -101,9 +102,9 @@ export class Button {
             this.count--;
         }
     }
-    callClickAction(game) {
+    callClickAction(game, btn) {
         if(this.clickAction) {
-            this.clickAction(game);
+            this.clickAction(game, btn);
         }
     }
 }
@@ -114,5 +115,27 @@ export class Spacer extends Button {
     }
     render(ctx) {
         // nothing
+    }
+}
+
+export class MenuButton extends Button {
+    constructor(x, y, w, h, text, clickAction) {
+        super(w,h);
+        this.x = Math.round(x - w/2);
+        this.y = Math.round(y - h/2);
+        this.text = text;
+        this.clickAction = clickAction;
+    }
+
+    render(ctx) {
+        ctx.strokeStyle = '#fffa';
+        ctx.lineWidth = 2; 
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '18px monospace';
+        ctx.fillText(this.text, this.x + this.w/2, this.y + this.h/2);
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.stroke();
     }
 }

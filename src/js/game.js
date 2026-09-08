@@ -1,4 +1,4 @@
-import { Button, Buttons, Spacer } from "./framework/buttons.js";
+import { Button, Buttons, MenuButton, Spacer } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
 import { STATE_BUILD_BRIDGE, STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
@@ -12,6 +12,9 @@ import { Text } from "./framework/text.js";
 import { Dispender } from "./gameobjects/dispenser.js";
 
 const MAX_DELTA = 0.1;
+
+export const STATE_MENU = 1;
+export const STATE_LEVEL_RUNNING = 2;
 
 export class Game {
     constructor() {
@@ -38,6 +41,11 @@ export class Game {
 
         //special button for speedup
         this.speedup = null;
+
+        // mouse clicked state
+        this.pointerdown = false;
+
+        this.state = STATE_MENU;
     }
 
     init(canvasLevel, canvasGame, spriteImage) {
@@ -54,6 +62,7 @@ export class Game {
         this.canvas = canvasGame;
         canvasGame.addEventListener("mousemove", (e)=>this.readMouse(e));
         canvasGame.addEventListener("pointerdown", (e)=>this.readMouse(e, true));
+        canvasGame.addEventListener("pointerup", (e)=>this.pointerdown = false);
         this.ctx = canvasGame.getContext("2d");
         this.sprites = new Spritesheet(spriteImage);
         this.buttons = new Buttons(this);
@@ -143,7 +152,10 @@ export class Game {
                     ctx.fill();
                     break;
                 case "l":
-                    self.add(new Dispender(d[1]*1,d[2]*1, d[3]*1));
+                    let disp = self.add(new Dispender(d[1]*1,d[2]*1, d[3]*1));
+                    if(d.length >= 5) {
+                        disp.direction = d[4]*1;
+                    }
                     break;
                 case "t":
                     self.add(new Rainbow(d[1]*1,d[2]*1));
@@ -199,16 +211,20 @@ export class Game {
         this.mouse.x = Math.round((ePos.x - playArea.x) * fact);
         this.mouse.y = Math.round((ePos.y - playArea.y) * fact);
         if(clicked) {
+            this.pointerdown = true;
             // check buttons first
             let btnClicked = false;
-            for(let btn of this.buttons.buttons) {
+            let buttons = [...this.buttons.buttons];
+            this.gui.filter(g=>g.type == "button").forEach(b=>buttons.push(b));
+
+            for(let btn of buttons) {
                 if(pointInBox(this.mouse.x, this.mouse.y, btn)) {
                     if(btn === this.speedup && btn.active) {
                         btn.active = false;
                         break;
                     }
                     this.buttons.setActive(btn);
-                    btn.callClickAction(this);
+                    btn.callClickAction(this, btn);
                     this.sfx.playAudio("sfx", "button");
                     break;
                 }
@@ -235,22 +251,30 @@ export class Game {
     }
 
     checkLevelCleared() {
-        if(this.levels.length == 0) {
+        if(this.levels.length == 0 || game.state == STATE_MENU) {
             // not loaded yet
             return;
         }
         let stillToEnter = 0;
         this.getObjectsByType("dispenser").forEach(d => stillToEnter += d.count);
         if(stillToEnter <= 0 && this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length == 0) {
+            this.state = STATE_MENU;
             if(this.lemSaved >= this.lemToSave) {
                 // TODO: display "NEXT LEVEL"
                 if(this.level < this.levels.length - 1) {
-                    this.level++;
-                    this.loadLevel(this.level);
+                    this.gui.push(new MenuButton(400,280,200,50,"NEXT LEVEL",(game, btn)=>{
+                        game.gui = game.gui.filter(elem => elem !== btn);
+                        game.level++;
+                        game.loadLevel(game.level);
+                        game.state = STATE_LEVEL_RUNNING;
+                    }));
                 }
             } else {
-                // TODO: display "RESTART LEVEL"
-                this.loadLevel(this.level);
+                this.gui.push(new MenuButton(400,280,200,50,"RETRY",(game, btn)=>{
+                    game.gui = game.gui.filter(elem => elem !== btn);
+                    game.loadLevel(game.level);
+                    game.state = STATE_LEVEL_RUNNING;
+                }));
             }
         }
     }
@@ -279,6 +303,9 @@ export class Game {
     }
 
     update(delta) {
+        if(this.state == STATE_MENU) {
+            return;
+        }
         if(this.speedup && this.speedup.active) {
             delta*=3;
         }
@@ -295,10 +322,11 @@ export class Game {
         this.objects.forEach(o => o.render(this.ctx));
         this.gui.forEach(o => o.render(this.ctx));
         // mouse pointer
-        this.ctx.strokeStyle = '#ff08';
+        this.ctx.strokeStyle = this.pointerdown ? '#fffc' : '#ff08';
+        let size = this.pointerdown ? 12 : 16;
         this.ctx.lineWidth = 2;
         this.ctx.beginPath();
-        this.ctx.rect(this.mouse.x - 8, this.mouse.y - 8, 16,16);
+        this.ctx.rect(this.mouse.x - size/2, this.mouse.y - size/2, size, size);
         this.ctx.rect(this.mouse.x - 1, this.mouse.y - 1, 2,2);
         this.ctx.stroke();
     }
@@ -306,6 +334,7 @@ export class Game {
     add(gameobject) {
         gameobject.game = this;
         this.objects.push(gameobject);
+        return gameobject;
     }
 
     getImageData(x,y) {
