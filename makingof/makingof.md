@@ -112,3 +112,9 @@ I added a new button to create a bridge builder that creates a rainbow-bridge in
 
 I added Menu-Buttons to start the game and retry stages
 And a new level "Double Trouble with two Lemmicorn spawning points
+
+## 2026-09-09 - End Screen and Info Text
+
+Added an Info-Text that shows how many Lemmicorns have to be saved to clear the level.
+Also an "The End" after the kat level and a button to restart the whole game
+

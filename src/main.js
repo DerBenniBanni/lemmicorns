@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "a,1,2,0,0,1,0",
         "l,80,10,10",
         "t,160,385,8", // 8 to save
-        "i,500,10,The needs of the many outweigh the needs of the few.",
+        "i,530,35,The needs of the many outweigh the needs of the few.",
         "i,350,400,...especially in times of not many options",
         
     ]);

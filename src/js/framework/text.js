@@ -2,7 +2,7 @@ export class Text {
     constructor(x, y, text, size) {
         this.x = x;
         this.y = y;
-        this.text = text;
+        this.text = typeof text ==='function' ? text : ()=>{return text;};
         this.size = size;
         this.levelBound = true;
     }
@@ -12,6 +12,6 @@ export class Text {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'hanging';
         ctx.font = this.size + 'px monospace';
-        ctx.fillText(this.text, this.x, this.y);
+        ctx.fillText(this.text(), this.x, this.y);
     }
 }

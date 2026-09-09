@@ -110,10 +110,17 @@ export class Game {
         b.addSprite(32,48,8,8,18,12);
         b.addSprite(32,48,8,8,8,12);
         this.speedup = b;
-        
-
 
         this.gui.push(this.buttons);
+
+        let txt = new Text(400,5,()=>{
+            if(this.lemToSave < 1000) {
+                return "Save at least "+this.lemToSave+" Lemmicorns! Currently saved: "+this.lemSaved;
+            }
+            return "X;"
+        },12);
+        txt.levelBound = false;
+        this.gui.push(txt);
         this.gameloop();
     }
 
@@ -260,11 +267,18 @@ export class Game {
         if(stillToEnter <= 0 && this.getObjectsByType("unicorn").filter(u=>u.ttl > 0).length == 0) {
             this.state = STATE_MENU;
             if(this.lemSaved >= this.lemToSave) {
-                // TODO: display "NEXT LEVEL"
                 if(this.level < this.levels.length - 1) {
                     this.gui.push(new MenuButton(400,280,200,50,"NEXT LEVEL",(game, btn)=>{
                         game.gui = game.gui.filter(elem => elem !== btn);
                         game.level++;
+                        game.loadLevel(game.level);
+                        game.state = STATE_LEVEL_RUNNING;
+                    }));
+                } else {
+                    this.gui.push(new Text(400,220, "The End (of 13 kilobyte worth of Lemmicorns)", 15));
+                    this.gui.push(new MenuButton(400,280,200,50,"RESTART GAME",(game, btn)=>{
+                        game.gui = game.gui.filter(elem => elem !== btn);
+                        game.level = 0;
                         game.loadLevel(game.level);
                         game.state = STATE_LEVEL_RUNNING;
                     }));
@@ -313,7 +327,7 @@ export class Game {
             this.checkLevelCleared();
         }
         this.objects = this.objects.filter(o=>o.ttl > 0);
-        this.rainbows = this.objects.filter(o=>o.type == "rainbow"); // move toevel-loader
+        this.rainbows = this.objects.filter(o=>o.type == "rainbow"); // move to level-loader
         this.objects.forEach(o => o.update(delta));
     }
 
