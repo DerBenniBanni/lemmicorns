@@ -10,6 +10,7 @@ import { Rainbow } from "./gameobjects/rainbow.js";
 import { TerrainPainter } from "./framework/terrainpainter.js";
 import { Text } from "./framework/text.js";
 import { Dispender } from "./gameobjects/dispenser.js";
+import { Bridge } from "./gameobjects/bridge.js";
 
 const MAX_DELTA = 0.1;
 
@@ -97,7 +98,8 @@ export class Game {
         }
         b.lemmicornAction = (u,g) => {
             u.state = STATE_BUILD_BRIDGE;
-            u.bridgeDuration = 6; //seconds
+            u.bridgeDuration = 2; //seconds
+            u.game.add(new Bridge(u.x, u.y, 100,u.direction));
         }
         // spacer
         b = this.buttons.add(new Spacer());
@@ -247,6 +249,9 @@ export class Game {
                 }
             }
         }
+        
+    }
+    startMusic() {
         if(!this.music) {
             this.sfx.playAudio("music");
             this.music = true;

@@ -118,3 +118,6 @@ And a new level "Double Trouble with two Lemmicorn spawning points
 Added an Info-Text that shows how many Lemmicorns have to be saved to clear the level.
 Also an "The End" after the kat level and a button to restart the whole game
 
+## 2026-09-10 - more levels and a refactored Rainbow
+
+The rainbow bridge was dependent on udate-cycles, so I replaced its implementation.

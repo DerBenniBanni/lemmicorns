@@ -1,6 +1,6 @@
 import { Animation } from "../framework/animation.js";
 import Point from "../framework/point.js";
-import { pointInBox } from "../framework/utils.js";
+import { pixelTerrain, pointInBox } from "../framework/utils.js";
 import { GameObject } from "./gameobject.js";
 import { getParticle, Particle, PARTICLEGROUP_HEART, PARTICLEGROUP_MUD } from "./particle.js";
 
@@ -21,7 +21,6 @@ export const STATE_FALLING = "fall";
 export const STATE_EXPLODE = "explode";
 export const STATE_BUILD_BRIDGE = "bridge";
 
-const pixelTerrain = (imageData) => !!imageData.a && imageData.a > 180;
 
 export class Unicorn extends GameObject{
     constructor(x,y) {
@@ -187,7 +186,7 @@ export class Unicorn extends GameObject{
             if(this.state == STATE_BUILD_BRIDGE) {
                 if(this.bridgeDuration <= 0) {
                         this.state = STATE_WALK;
-                } else {
+                } /*else {
                     let ctx = this.game.ctxLevel;
                     ctx.lineWidth = 1;
                     ['f00','ff0','0f0','0ff','00f'].forEach((c,i)=> {
@@ -197,7 +196,7 @@ export class Unicorn extends GameObject{
                         ctx.lineTo(this.x + 8*this.direction, this.y -2 + i);
                         ctx.stroke();
                     });
-                }
+                }*/
             }
             if(this.state == STATE_WALK || this.state == STATE_BUILD_BRIDGE) {
                 let nextX = this.x + SPEED * delta* this.direction;
@@ -248,6 +247,7 @@ export class Unicorn extends GameObject{
                     let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
                     if(!hitWall) {
                         this.state = STATE_WALK;
+                        this.willDigHorizontal = false;
                     }
                 }
             } 
