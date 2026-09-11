@@ -1,7 +1,7 @@
 import { Button, Buttons, MenuButton, Spacer } from "./framework/buttons.js";
 import Point from "./framework/point.js";
 import { Spritesheet } from "./framework/spritesheet.js";
-import { STATE_BUILD_BRIDGE, STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, Unicorn } from "./gameobjects/unicorn.js";
+import { STATE_BUILD_BRIDGE, STATE_DIG_DIAGONAL, STATE_DIG_DOWN, STATE_STOP, STATE_WALK, Unicorn } from "./gameobjects/unicorn.js";
 import SFXPlayer from "./sound/sfxplayer.js";
 import {sfxdata} from "./sound/sfx.js";
 import {musicdata} from "./sound/music.js";
@@ -80,17 +80,26 @@ export class Game {
         b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,12,8);
         b.addSprite(40,48,8,8,12,18);
-        b.lemmicornAction = (u,g) => u.state = STATE_DIG_DOWN;
+        b.lemmicornAction = (u,g) => {
+            if(u.state == STATE_WALK)
+                u.state = STATE_DIG_DOWN;
+        };
         // dig diagonal
         b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,8,8);
         b.addSprite(32,56,8,8,18,18);
-        b.lemmicornAction = (u,g) => u.state = STATE_DIG_DIAGONAL;
+        b.lemmicornAction = (u,g) => {
+            if(u.state == STATE_WALK) 
+                u.state = STATE_DIG_DIAGONAL;
+        };
         // dig horizontal
         b = this.buttons.add(new Button());
         b.addSprite(40,56,8,8,8,12);
         b.addSprite(32,48,8,8,18,12);
-        b.lemmicornAction = (u,g) => u.willDigHorizontal = true;
+        b.lemmicornAction = (u,g) => {
+            if(u.state == STATE_WALK) 
+                u.willDigHorizontal = true;
+        };
         // bridge
         b = this.buttons.add(new Button());
         for(let i = 0; i < 12; i++) {
@@ -323,6 +332,8 @@ export class Game {
 
     update(delta) {
         if(this.state == STATE_MENU) {
+            this.speedup = false;
+            this.objects.filter(o=>o.type == "particle").forEach(o => o.update(delta));
             return;
         }
         if(this.speedup && this.speedup.active) {

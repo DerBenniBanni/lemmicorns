@@ -45,6 +45,7 @@ export class Particle extends GameObject {
             w:particleDef[2],
             h:particleDef[3],
         };
+        this.type = 'particle';
     }
 
     update(delta) {

@@ -186,17 +186,7 @@ export class Unicorn extends GameObject{
             if(this.state == STATE_BUILD_BRIDGE) {
                 if(this.bridgeDuration <= 0) {
                         this.state = STATE_WALK;
-                } /*else {
-                    let ctx = this.game.ctxLevel;
-                    ctx.lineWidth = 1;
-                    ['f00','ff0','0f0','0ff','00f'].forEach((c,i)=> {
-                        ctx.beginPath();
-                        ctx.strokeStyle = '#'+c;
-                        ctx.moveTo(this.x + 5*this.direction, this.y -2 + i);
-                        ctx.lineTo(this.x + 8*this.direction, this.y -2 + i);
-                        ctx.stroke();
-                    });
-                }*/
+                }
             }
             if(this.state == STATE_WALK || this.state == STATE_BUILD_BRIDGE) {
                 let nextX = this.x + SPEED * delta* this.direction;
@@ -242,9 +232,16 @@ export class Unicorn extends GameObject{
                     }
                     this.generateMud(3);
                     this.x+= this.direction;
-                    let checkX = this.x + 5 * this.direction;
-                    let checkY = this.y-2;
-                    let hitWall = pixelTerrain(this.game.getImageData(checkX,checkY));
+                    let hitWall = false;
+                    for(let i = 4; i <=7; i++) {
+                        let checkX = this.x + i * this.direction;
+                        let checkY = this.y-2;
+                        hitWall |= pixelTerrain(this.game.getImageData(checkX,checkY));
+                        if(hitWall) {
+                            break;
+                        }
+                    }
+
                     if(!hitWall) {
                         this.state = STATE_WALK;
                         this.willDigHorizontal = false;

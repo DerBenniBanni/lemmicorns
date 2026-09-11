@@ -29,10 +29,10 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "r,1,0,360,800,20",
         "r,0,50,360,700,10",
         "t,500,372,3", // rainbow, 3 lemmicorns to be saved!
-        "l,300,350,3,1", // lemmicorns
+        "l,300,350,5,1", // lemmicorns
         "i,400,200,CHASING RAINBOWS,30",
         "i,500,385,Let them reach the rainbow!",
-        "a,0,0,0,0,0,0", // lemmicorn actions available (in order of buttons)
+        "a,0,100,0,0,0,0", // lemmicorn actions available (in order of buttons)
     ]);
     //just dig, dont fall too deep!
     game.levels.push([
@@ -94,6 +94,21 @@ document.addEventListener("DOMContentLoaded", ()=> {
         "t,660,312,8", // 8 to save
         "i,350,200,Bifrost to the rescue!",
         "a,1,1,0,0,0,2",
+    ]);
+    game.levels.push([
+        "c,1,131,131,35",
+        "r,1,127,96,194,69",
+        "r,1,283,125,70,153",
+        "c,1,318,131,35",
+        "c,1,318,278,35",
+        "r,1,313,251,70,60",
+        "r,1,313,295,191,18",
+        "r,1,96,55,100,81",
+        "r,0,113,46,69,96",
+        "l,140,80,4",
+        "t,450,297,2", 
+        "i,450,100,Tunnel Expert Wanted!",
+        "a,10,10,10,10,10,0",
     ]);
     game.levels.push([
         "r,1,0,421,132,41",
