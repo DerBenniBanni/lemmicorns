@@ -332,7 +332,7 @@ export class Game {
 
     update(delta) {
         if(this.state == STATE_MENU) {
-            this.speedup = false;
+            this.speedup.active = false;
             this.objects.filter(o=>o.type == "particle").forEach(o => o.update(delta));
             return;
         }
