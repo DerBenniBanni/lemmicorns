@@ -8,6 +8,7 @@ export class Rainbow extends GameObject {
         this.type = "rainbow";
         this.sizeModBaseValue = 0;
         this.sizeMod = 4;
+        this.flash = 1;
     }
     getBoundingBox() {
         return {
@@ -20,6 +21,11 @@ export class Rainbow extends GameObject {
 
     update(delta) {
         this.sizeModBaseValue += delta;
+        if(this.flash > 0) {
+            this.flash -= delta;
+        } else {
+            this.flash = 0;
+        }
     }
 
     render(ctx) {
@@ -27,6 +33,13 @@ export class Rainbow extends GameObject {
         ctx.beginPath();
         ctx.lineWidth = 1.2;
         let size = RAINBOWSIZE + Math.sin(this.sizeModBaseValue) * this.sizeMod;
+        if(this.flash > 0) {
+            ctx.beginPath();
+            ctx.fillStyle = '#ffffff' + Math.floor(this.flash * 255).toString(16).padStart(2,'0');
+            ctx.arc(0,0, size+3, Math.PI, 0);
+            ctx.fill();
+            
+        }
         ['#f00','#f80','#ff0','#0f0','#0ff','#00f','#a0f'].forEach((c,i)=>{
             ctx.beginPath();
             ctx.strokeStyle = c;

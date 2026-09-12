@@ -333,7 +333,7 @@ export class Game {
     update(delta) {
         if(this.state == STATE_MENU) {
             this.speedup.active = false;
-            this.objects.filter(o=>o.type == "particle").forEach(o => o.update(delta));
+            this.objects.filter(o=>["particle","rainbow","dispenser"].indexOf(o.type) > -1).forEach(o => o.update(delta));
             return;
         }
         if(this.speedup && this.speedup.active) {

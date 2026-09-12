@@ -282,6 +282,7 @@ export class Unicorn extends GameObject{
         let rainbowReached = this.game.rainbows.find(r=> pointInBox(this.x, this.y, r));
         if(rainbowReached){
             this.game.sfx.playAudio("sfx", "target");
+            rainbowReached.flash=1;
             this.ttl = 0;
             this.game.lemSaved++;
             this.game.checkLevelCleared();

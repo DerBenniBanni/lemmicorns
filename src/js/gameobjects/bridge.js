@@ -33,6 +33,11 @@ export class Bridge extends GameObject {
     }
 
     render(ctx) {
-        // pixie-dust? cloud?
+        ctx.fillStyle = '#fff8';
+        for(let i = 0; i <10; i++) {
+            let x = this.x + Math.round(Math.random()*8 - 4 + this.px * this.direction);
+            let y = this.y + Math.round(Math.random()*6 - 3 - this.py);
+            ctx.fillRect(x-2,y-2, 4, 4);
+        }
     }
 }
